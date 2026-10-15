@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Figma × AI Course</title>
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --card: #ffffff;
+    --text: #1c1c1e;
+    --muted: #6b6b70;
+    --border: #e4e2dc;
+    --accent: #5b4bff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141416;
+      --card: #1e1e21;
+      --text: #f2f2f3;
+      --muted: #9a9aa1;
+      --border: #2c2c31;
+      --accent: #8b7fff;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    line-height: 1.5;
+  }
+  main { max-width: 960px; margin: 0 auto; padding: 56px 16px 80px; }
+  header { margin-bottom: 32px; }
+  .eyebrow {
+    font-size: 13px; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent);
+  }
+  h1 { font-size: clamp(32px, 6vw, 48px); margin: 6px 0 8px; letter-spacing: -0.02em; }
+  .sub { color: var(--muted); margin: 0; }
+  input[type="search"] {
+    width: 100%; margin: 28px 0 24px; padding: 12px 14px;
+    font: inherit; color: var(--text); background: var(--card);
+    border: 1px solid var(--border); border-radius: 10px; outline: none;
+  }
+  input[type="search"]:focus { border-color: var(--accent); }
+  .grid {
+    display: grid; gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  }
+  a.card {
+    display: block; padding: 18px; text-decoration: none; color: inherit;
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    transition: transform .15s ease, border-color .15s ease;
+  }
+  a.card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .name { font-weight: 600; font-size: 17px; margin-bottom: 4px; }
+  .path { font-size: 13px; color: var(--muted); word-break: break-all; }
+  .status { color: var(--muted); padding: 24px 0; }
+  footer { margin-top: 48px; font-size: 13px; color: var(--muted); }
+  footer a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Shared prototypes</div>
+    <h1>Figma × AI Course</h1>
+    <p class="sub">HTML pages shared by course participants. Click any card to open it.</p>
+  </header>
+
+  <input type="search" id="filter" placeholder="Search pages…" aria-label="Search pages">
+  <div class="grid" id="grid"></div>
+  <div class="status" id="status">Loading pages…</div>
+
+  <footer>
+    This list updates automatically from the
+    <a id="repoLink" href="#">GitHub repository</a>.
+  </footer>
+</main>
+
+<script>
+  // Change these if you rename the repo or branch
+  const OWNER  = "annooki";
+  const REPO   = "figma-ai-course";
+  const BRANCH = "main";
+
+  const grid = document.getElementById("grid");
+  const status = document.getElementById("status");
+  const filter = document.getElementById("filter");
+  document.getElementById("repoLink").href = `https://github.com/${OWNER}/${REPO}`;
+
+  // "onboarding-flow.html" -> "Onboarding flow"
+  function prettify(path) {
+    const file = path.split("/").pop().replace(/\.html?$/i, "");
+    const words = file.replace(/[-_]+/g, " ").trim();
+    return words.charAt(0).toUpperCase() + words.slice(1);
+  }
+
+  let pages = [];
+
+  function render() {
+    const q = filter.value.toLowerCase();
+    const shown = pages.filter(p => p.toLowerCase().includes(q));
+    grid.innerHTML = "";
+    shown.forEach(path => {
+      const a = document.createElement("a");
+      a.className = "card";
+      a.href = path.split("/").map(encodeURIComponent).join("/");
+      a.innerHTML = `<div class="name"></div><div class="path"></div>`;
+      a.querySelector(".name").textContent = prettify(path);
+      a.querySelector(".path").textContent = path;
+      grid.appendChild(a);
+    });
+    status.textContent = shown.length ? "" :
+      (pages.length ? "No pages match your search." : "No pages uploaded yet.");
+  }
+
+  fetch(`https://api.github.com/repos/${OWNER}/${REPO}/git/trees/${BRANCH}?recursive=1`)
+    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(data => {
+      pages = data.tree
+        .filter(f => f.type === "blob" && /\.html?$/i.test(f.path))
+        .map(f => f.path)
+        .filter(p => p.toLowerCase() !== "index.html")
+        .sort((a, b) => a.localeCompare(b));
+      render();
+    })
+    .catch(() => {
+      status.textContent = "Couldn't load the list right now. Please refresh in a minute.";
+    });
+
+  filter.addEventListener("input", render);
+</script>
+</body>
+</html>
