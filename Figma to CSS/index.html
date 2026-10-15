@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<!-- ↑ The very first line always tells the browser "this is a modern HTML page". -->
+
+<!--
+  👋 HOW TO READ THIS FILE (a beginner's guide)
+  ===========================================================================
+  This is HTML: the CONTENT and STRUCTURE of the page, like the layers
+  panel in Figma. All the LOOKS (colours, sizes, spacing) live in styles.css.
+
+  • Text between  <!- -  and  - ->  (without the spaces) is a COMMENT,
+    a note for humans. The browser ignores it.
+
+  • HTML is made of TAGS. Most come in pairs and wrap content, like a
+    frame wraps its layers in Figma:
+
+        <p class="text-body-md">Hello</p>
+        ↑ opening tag            ↑ closing tag (with a slash)
+
+  • class="..." connects the element to styles in styles.css.
+    class="text-body-md" applies the CSS rule  .text-body-md { ... }
+    An element can have several classes separated by spaces, like
+    stacking a text style AND a fill style on one Figma layer:
+        class="button button--primary text-button-md"
+        = button base + primary variant + button text style
+
+  • Tags you'll see in this file:
+      <header>  top bar of the page      <main>   main content
+      <section> a section of the page    <footer> bottom bar
+      <div>     a plain frame / group    <nav>    group of navigation links
+      <h1> <h2> <h3>  headings, level 1 (most important) to 3
+      <p>       a paragraph of text      <span>   a small piece of text
+      <a>       a link (href="..." says where it goes)
+      <img>     an image (src="..." is the file, alt="..." describes it
+                for people who can't see it)
+      <br>      a line break
+  ===========================================================================
+-->
+
+<html lang="en">
+
+<!-- <head> holds settings and info about the page. Nothing in here
+     is shown on the page itself. -->
+<head>
+  <!-- Supports all characters (é, ©, →, emoji…) -->
+  <meta charset="UTF-8">
+  <!-- Makes the page fit phone screens instead of showing a zoomed-out desktop page -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- The name shown on the browser tab -->
+  <title>Anna Horodecka — UX. AI. Product Design.</title>
+  <!-- Connects this page to styles.css, where all styling and variables live -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<!-- <body> holds everything you can see on the page -->
+<body>
+
+  <!-- ===== Navigation (Figma component "Navigation") ===== -->
+  <header class="nav">
+    <!-- "container" keeps content at the 1280px frame width;
+         "nav__inner" is the horizontal auto layout (logo left, links right) -->
+    <div class="container nav__inner">
+
+      <!-- The coral circle logo. href="#" links to the top of the page.
+           aria-label gives it a name for screen readers, since it has no text. -->
+      <a class="nav__logo" href="#" aria-label="Home"></a>
+
+      <!-- MOBILE MENU (only visible below 800px wide).
+           The hamburger icon is a <label> for an invisible checkbox.
+           Tapping the icon ticks the box, and styles.css then shows the links. -->
+      <input class="nav__toggle-input" type="checkbox" id="menu">
+      <label class="nav__toggle" for="menu" aria-label="Open menu">
+        <!-- Figma icon "bars-light", pasted in as SVG code (vector shapes,
+             like an icon exported from Figma as SVG) -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+          <path d="M3.6 5.4c0-.33.27-.6.6-.6h15.6c.33 0 .6.27.6.6s-.27.6-.6.6H4.2a.6.6 0 0 1-.6-.6Zm0 6c0-.33.27-.6.6-.6h15.6c.33 0 .6.27.6.6s-.27.6-.6.6H4.2a.6.6 0 0 1-.6-.6Zm16.8 6c0 .33-.27.6-.6.6H4.2a.6.6 0 0 1 0-1.2h15.6c.33 0 .6.27.6.6Z"/>
+        </svg>
+      </label>
+
+      <!-- The navigation links. href="#work" jumps to the element on this
+           page with id="work" (the first project card). -->
+      <nav class="nav__links">
+        <a class="button button--tertiary text-button-md" href="#work">work.</a>
+        <a class="button button--tertiary text-button-md" href="#about">about.</a>
+        <a class="button button--tertiary text-button-md" href="#skills">skills.</a>
+        <a class="button button--primary text-button-md" href="#contact">contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===== Hero (Figma component "Hero") ===== -->
+    <section class="hero">
+      <div class="container hero__inner">
+        <p class="hero__name text-subtitle-md">Anna Horodecka</p>
+        <!-- <h1> is the page's main heading (there should only be one).
+             The text is written in normal case; the text style makes it
+             UPPERCASE, just like the "Case" setting in Figma. -->
+        <h1 class="hero__title text-display-md">UX . AI.<br>Product design.</h1>
+      </div>
+    </section>
+
+    <!-- ===== ProjectCard, Bg colour = White =====
+         id="work" is the target the "work." nav link jumps to -->
+    <article class="project-card" id="work">
+      <!-- "project-card__inner" = two columns: image left, text right -->
+      <div class="container project-card__inner">
+        <!-- alt="" (empty) because this is a placeholder with nothing to describe -->
+        <img class="project-card__image" src="images/project-placeholder.png" alt="">
+        <div class="project-card__content">
+          <h2 class="text-headline-md">One-click checkout for Royal Mail senders</h2>
+          <p class="project-card__text text-body-md">Integrating Fastlane by PayPal into Royal Mail's Send an item checkout so returning customers can pay with saved details. I worked through OTP, address and card display decisions with PayPal and the development team.</p>
+          <!-- &nbsp; is a "non-breaking space": an extra space the browser won't collapse -->
+          <a class="link-button text-link-md" href="#">find out more&nbsp; →</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- ===== ProjectCard, Bg colour = Pale =====
+         Same as above plus the extra class "project-card--pale", which
+         switches the background, like changing a component property. -->
+    <article class="project-card project-card--pale">
+      <div class="container project-card__inner">
+        <img class="project-card__image" src="images/project-placeholder.png" alt="">
+        <div class="project-card__content">
+          <h2 class="text-headline-md">AI assistant for sending parcels</h2>
+          <p class="project-card__text text-body-md">Designing Postie, an AI chat assistant on Royal Mail's Send an item page. It started by helping people choose the right parcel size and service, then grew to cover the main sending journey, including tracking.</p>
+          <a class="link-button text-link-md" href="#">find out more&nbsp; →</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- ===== ProjectCard, Bg colour = White ===== -->
+    <article class="project-card">
+      <div class="container project-card__inner">
+        <img class="project-card__image" src="images/project-placeholder.png" alt="">
+        <div class="project-card__content">
+          <h2 class="text-headline-md">Bulk postage for hundreds of orders at once</h2>
+          <p class="project-card__text text-body-md">Designing the multi-order Apply postage flow in ClickAndDrop for sellers who ship at scale. The focus: smart weight logic, editing package contents, and clear feedback when only part of a batch fails.</p>
+          <a class="link-button text-link-md" href="#">find out more&nbsp; →</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- ===== ProjectCard, Bg colour = Pale ===== -->
+    <article class="project-card project-card--pale">
+      <div class="container project-card__inner">
+        <img class="project-card__image" src="images/project-placeholder.png" alt="">
+        <div class="project-card__content">
+          <h2 class="text-headline-md">From audit to design system</h2>
+          <p class="project-card__text text-body-md">Auditing ClickAndDrop's live components to find where code and design had drifted apart, then turning the findings into a Figma design system with shared tokens, components and rules for designers and developers.</p>
+          <a class="link-button text-link-md" href="#">find out more&nbsp; →</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- ===== About (Figma component "About") ===== -->
+    <section class="about" id="about">
+      <!-- Two columns: text left, photo right (photo moves on top on mobile) -->
+      <div class="container about__inner">
+        <div class="about__content">
+          <div class="about__text">
+            <h2 class="about__title text-headline-lg">About me</h2>
+            <p class="text-body-md">Hi, I'm Anna, a UX/product designer based in Poland. I design tools for shipping and logistics, from AI chat assistants to bulk workflows that people use every day. I like turning messy, complex processes into flows that feel simple. I work closely with developers to make sure the result holds up after handoff.</p>
+            <p class="text-body-md">Outside of work, I'm in love with diving and travelling slowly and far. I recently spent eight months exploring Asia. I'm also learning to sail, which turns out to be a lot like product design: read the conditions, adjust, keep moving.</p>
+          </div>
+          <a class="button button--primary text-button-md" href="#contact">contact</a>
+        </div>
+        <!-- src = the image file in the "images" folder -->
+        <img class="about__image" src="images/about-anna.jpg" alt="Anna Horodecka smiling, sitting by a window with plants">
+      </div>
+    </section>
+
+    <!-- ===== Skills (Figma component "Skills") ===== -->
+    <section class="skills" id="skills">
+      <div class="container skills__inner">
+        <!-- The decorative pink circle. aria-hidden="true" tells screen
+             readers to skip it, because it's only decoration. -->
+        <div class="skills__circle" aria-hidden="true"></div>
+        <h2 class="text-headline-lg">Skills</h2>
+        <!-- Three columns on desktop and tablet, one column on mobile -->
+        <div class="skills__list">
+          <div class="skill">
+            <!-- "&amp;" is how you write "&" in HTML -->
+            <h3 class="text-headline-sm">UX &amp; Interaction Design</h3>
+            <p class="skill__text text-body-md">I design complex flows that feel simple: bulk actions, edge cases, validation and error states. I think in user journeys, not single screens.</p>
+          </div>
+          <div class="skill">
+            <h3 class="text-headline-sm">Design Systems</h3>
+            <p class="skill__text text-body-md">I audit live products, define tokens and build Figma components that keep design and code consistent across teams.</p>
+          </div>
+          <div class="skill">
+            <h3 class="text-headline-sm">AI-assisted Design</h3>
+            <p class="skill__text text-body-md">I use AI to explore ideas, build clickable prototypes and iterate faster, from wireframes to testable flows.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== Footer (Figma component "Footer") =====
+       id="contact" is where the "contact" buttons jump to -->
+  <footer class="footer" id="contact">
+    <div class="container footer__inner">
+      <span class="text-label-md">© 2026 Anna Horodecka</span>
+      <span class="footer__dot" aria-hidden="true"></span>
+      <a class="text-link-md-subtle" href="#">Contact</a>
+    </div>
+  </footer>
+
+</body>
+</html>
