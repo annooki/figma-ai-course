@@ -1,0 +1,36 @@
+.hero {
+  display: flex;
+  justify-content: center;
+  padding: var(--hero-padding-y) var(--page-padding-x);
+  background: var(--bg-hero);
+}
+
+.hero__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--content-gap-sm);
+  width: 100%;
+  max-width: var(--container-max);
+  text-align: center;
+}
+
+.hero__name {                     /* text/subtitle/md */
+  font-family: var(--font-family-syne);
+  font-size: var(--font-size-300);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  color: var(--text-primary);
+}
+
+.hero__title {                    /* text/display/md */
+  font-family: var(--font-family-monoton);
+  font-size: var(--font-size-700);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: pre-wrap;
+  color: var(--text-brand);
+}

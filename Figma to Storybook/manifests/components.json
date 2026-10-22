@@ -1,0 +1,1208 @@
+{
+  "v": 0,
+  "components": {
+    "foundations-colours": {
+      "id": "foundations-colours",
+      "name": "Colours",
+      "path": "./src/foundations/Colors.stories.tsx",
+      "jsDocTags": {},
+      "error": {
+        "name": "No component found",
+        "message": "We could not detect the component from your story file. Specify meta.component.\n  3 | import './Foundations.css';\n  4 |\n> 5 | const meta = {\n    | ^\n  6 |   title: 'Foundations/Colours',\n  7 |   tags: ['!autodocs'],\n  8 |   parameters: { controls: { disable: true } },\n\n./src/foundations/Colors.stories.tsx:\nimport type { Meta, StoryObj } from '@storybook/react-vite';\nimport { figmaName, hexOf, primitiveColors, semanticColors } from './tokens';\nimport './Foundations.css';\n\nconst meta = {\n  title: 'Foundations/Colours',\n  tags: ['!autodocs'],\n  parameters: { controls: { disable: true } },\n} satisfies Meta;\n\nexport default meta;\ntype Story = StoryObj<typeof meta>;\n\n/** Figma collection \"colour primitives\" */\nexport const Primitives: Story = {\n  render: () => (\n    <div className=\"fd\">\n      {['coral', 'sand', 'neutral'].map((family) => (\n        <section key={family}>\n          <h2>{family}</h2>\n          <div className=\"fd__swatches\">\n            {primitiveColors\n              .filter((c) => c.family === family)\n              .map((c) => (\n                <div className=\"fd__swatch\" key={c.name}>\n                  <div className=\"fd__chip\" style={{ background: `var(${c.name})` }} />\n                  <code>{figmaName(c.name).replace('color/', '')}</code>\n                  <span className=\"fd__muted\">{c.value}</span>\n                </div>\n              ))}\n          </div>\n        </section>\n      ))}\n    </div>\n  ),\n};\n\nconst Mode = ({ alias }: { alias: string }) => (\n  <span className=\"fd__mode\">\n    <span className=\"fd__dot\" style={{ background: `var(${alias})` }} />\n    <span>\n      <code>{figmaName(alias)}</code>\n      <br />\n      <span className=\"fd__muted\">{hexOf(alias)}</span>\n    </span>\n  </span>\n);\n\n/** Figma collection \"colour semantics\", modes light and dark. Use these in components. */\nexport const Semantics: Story = {\n  render: () => (\n    <div className=\"fd\">\n      <section>\n        <h2>colour semantics</h2>\n        <p className=\"fd__note\">Each token points to a primitive, per mode. The Theme toolbar switches the mode for the components.</p>\n        <table>\n          <thead>\n            <tr>\n              <th>Token</th>\n              <th>CSS variable</th>\n              <th>light</th>\n              <th>dark</th>\n            </tr>\n          </thead>\n          <tbody>\n            {semanticColors.map((c) => (\n              <tr key={c.name}>\n                <td>\n                  <code>{figmaName(c.name)}</code>\n                </td>\n                <td>\n                  <code className=\"fd__muted\">{c.name}</code>\n                </td>\n                <td>\n                  <Mode alias={c.light} />\n                </td>\n                <td>\n                  <Mode alias={c.dark} />\n                </td>\n              </tr>\n            ))}\n          </tbody>\n        </table>\n      </section>\n    </div>\n  ),\n};\n"
+      },
+      "stories": [
+        {
+          "id": "foundations-colours--primitives",
+          "name": "Primitives",
+          "snippet": "const Primitives = () => (\n  <div className=\"fd\">\n    {['coral', 'sand', 'neutral'].map((family) => (\n      <section key={family}>\n        <h2>{family}</h2>\n        <div className=\"fd__swatches\">\n          {primitiveColors\n            .filter((c) => c.family === family)\n            .map((c) => (\n              <div className=\"fd__swatch\" key={c.name}>\n                <div className=\"fd__chip\" style={{ background: `var(${c.name})` }} />\n                <code>{figmaName(c.name).replace('color/', '')}</code>\n                <span className=\"fd__muted\">{c.value}</span>\n              </div>\n            ))}\n        </div>\n      </section>\n    ))}\n  </div>\n);",
+          "description": "Figma collection \"colour primitives\""
+        },
+        {
+          "id": "foundations-colours--semantics",
+          "name": "Semantics",
+          "snippet": "const Semantics = () => (\n  <div className=\"fd\">\n    <section>\n      <h2>colour semantics</h2>\n      <p className=\"fd__note\">Each token points to a primitive, per mode. The Theme toolbar switches the mode for the components.</p>\n      <table>\n        <thead>\n          <tr>\n            <th>Token</th>\n            <th>CSS variable</th>\n            <th>light</th>\n            <th>dark</th>\n          </tr>\n        </thead>\n        <tbody>\n          {semanticColors.map((c) => (\n            <tr key={c.name}>\n              <td>\n                <code>{figmaName(c.name)}</code>\n              </td>\n              <td>\n                <code className=\"fd__muted\">{c.name}</code>\n              </td>\n              <td>\n                <Mode alias={c.light} />\n              </td>\n              <td>\n                <Mode alias={c.dark} />\n              </td>\n            </tr>\n          ))}\n        </tbody>\n      </table>\n    </section>\n  </div>\n);",
+          "description": "Figma collection \"colour semantics\", modes light and dark. Use these in components."
+        }
+      ]
+    },
+    "foundations-typography": {
+      "id": "foundations-typography",
+      "name": "Typography",
+      "path": "./src/foundations/Typography.stories.tsx",
+      "jsDocTags": {},
+      "error": {
+        "name": "No component found",
+        "message": "We could not detect the component from your story file. Specify meta.component.\n  3 | import './Foundations.css';\n  4 |\n> 5 | const meta = {\n    | ^\n  6 |   title: 'Foundations/Typography',\n  7 |   tags: ['!autodocs'],\n  8 |   parameters: { controls: { disable: true } },\n\n./src/foundations/Typography.stories.tsx:\nimport type { Meta, StoryObj } from '@storybook/react-vite';\nimport { figmaName, modes } from './tokens';\nimport './Foundations.css';\n\nconst meta = {\n  title: 'Foundations/Typography',\n  tags: ['!autodocs'],\n  parameters: { controls: { disable: true } },\n} satisfies Meta;\n\nexport default meta;\ntype Story = StoryObj<typeof meta>;\n\n/* Figma text styles and the variables they are bound to */\nconst textStyles = [\n  { name: 'text/display/md', className: 'text-display-md', font: 'Monoton Regular', size: '--font-size-700', lineHeight: '120%', tracking: '2%', sample: 'UX . AI.' },\n  { name: 'text/headline/lg', className: 'text-headline-lg', font: 'Syne Bold', size: '--font-size-500', lineHeight: '145%', tracking: '-2%', sample: 'About me' },\n  { name: 'text/headline/md', className: 'text-headline-md', font: 'Syne Bold', size: '--font-size-400', lineHeight: '125%', tracking: '-2%', sample: 'Project headline' },\n  { name: 'text/headline/sm', className: 'text-headline-sm', font: 'Syne Bold', size: '--font-size-200', lineHeight: '145%', tracking: '-0.5%', sample: 'UX & Interaction Design' },\n  { name: 'text/subtitle/md', className: 'text-subtitle-md', font: 'Syne Regular', size: '--font-size-300', lineHeight: '145%', tracking: '-0.5%', sample: 'Anna Horodecka' },\n  { name: 'text/body/md', className: 'text-body-md', font: 'Poppins Regular', size: '--font-size-100', lineHeight: '170%', tracking: '-0.5%', sample: 'I design complex flows that feel simple.' },\n  { name: 'text/button/md', className: 'text-button-md', font: 'Syne Medium', size: '--font-size-100', lineHeight: '20px', tracking: '0%', sample: 'contact' },\n  { name: 'text/label/md', className: 'text-label-md', font: 'Syne Medium', size: '--font-size-100', lineHeight: '20px', tracking: '0%', sample: '© 2026 Anna Horodecka' },\n  { name: 'text/link/md', className: 'text-link-md', font: 'Syne Bold', size: '--font-size-100', lineHeight: '170%', tracking: '-2%', sample: 'find out more  →' },\n  { name: 'text/link/md-subtle', className: 'text-link-md-subtle', font: 'Syne Medium', size: '--font-size-100', lineHeight: '20px', tracking: '0%', sample: 'Contact' },\n];\n\nconst px = (cssVar: string, mode: keyof typeof modes) => modes[mode][cssVar];\n\n/** All Figma text styles. Sizes per breakpoint mode: >1280 / >800 / <800. */\nexport const TextStyles: Story = {\n  render: () => (\n    <div className=\"fd\">\n      <section>\n        <h2>Text styles</h2>\n        <p className=\"fd__note\">The sample uses the current Frame mode (toolbar). Class names: <code>.text-…</code> in <code>src/typography.css</code>.</p>\n        <table>\n          <thead>\n            <tr>\n              <th>Style</th>\n              <th>Sample</th>\n              <th>Font</th>\n              <th>Size (&gt;1280 / &gt;800 / &lt;800)</th>\n              <th>Line height</th>\n              <th>Letter spacing</th>\n            </tr>\n          </thead>\n          <tbody>\n            {textStyles.map((s) => (\n              <tr key={s.name}>\n                <td>\n                  <code>{s.name}</code>\n                </td>\n                <td>\n                  <span className={s.className} style={{ whiteSpace: 'pre' }}>\n                    {s.sample}\n                  </span>\n                </td>\n                <td>{s.font}</td>\n                <td>\n                  {px(s.size, 'desktop')} / {px(s.size, 'tablet')} / {px(s.size, 'mobile')}\n                  <br />\n                  <code className=\"fd__muted\">{figmaName(s.size)}</code>\n                </td>\n                <td>{s.lineHeight}</td>\n                <td>{s.tracking}</td>\n              </tr>\n            ))}\n          </tbody>\n        </table>\n      </section>\n    </div>\n  ),\n};\n"
+      },
+      "stories": [
+        {
+          "id": "foundations-typography--text-styles",
+          "name": "Text Styles",
+          "snippet": "const TextStyles = () => (\n  <div className=\"fd\">\n    <section>\n      <h2>Text styles</h2>\n      <p className=\"fd__note\">The sample uses the current Frame mode (toolbar). Class names: <code>.text-…</code> in <code>src/typography.css</code>.</p>\n      <table>\n        <thead>\n          <tr>\n            <th>Style</th>\n            <th>Sample</th>\n            <th>Font</th>\n            <th>Size (&gt;1280 / &gt;800 / &lt;800)</th>\n            <th>Line height</th>\n            <th>Letter spacing</th>\n          </tr>\n        </thead>\n        <tbody>\n          {textStyles.map((s) => (\n            <tr key={s.name}>\n              <td>\n                <code>{s.name}</code>\n              </td>\n              <td>\n                <span className={s.className} style={{ whiteSpace: 'pre' }}>\n                  {s.sample}\n                </span>\n              </td>\n              <td>{s.font}</td>\n              <td>\n                {px(s.size, 'desktop')} / {px(s.size, 'tablet')} / {px(s.size, 'mobile')}\n                <br />\n                <code className=\"fd__muted\">{figmaName(s.size)}</code>\n              </td>\n              <td>{s.lineHeight}</td>\n              <td>{s.tracking}</td>\n            </tr>\n          ))}\n        </tbody>\n      </table>\n    </section>\n  </div>\n);",
+          "description": "All Figma text styles. Sizes per breakpoint mode: >1280 / >800 / <800."
+        }
+      ]
+    },
+    "foundations-spacing-radius": {
+      "id": "foundations-spacing-radius",
+      "name": "Spacing&radius",
+      "path": "./src/foundations/Spacing.stories.tsx",
+      "jsDocTags": {},
+      "error": {
+        "name": "No component found",
+        "message": "We could not detect the component from your story file. Specify meta.component.\n  3 | import './Foundations.css';\n  4 |\n> 5 | const meta = {\n    | ^\n  6 |   title: 'Foundations/Spacing & radius',\n  7 |   tags: ['!autodocs'],\n  8 |   parameters: { controls: { disable: true } },\n\n./src/foundations/Spacing.stories.tsx:\nimport type { Meta, StoryObj } from '@storybook/react-vite';\nimport { aliasOf, figmaName, modes, radiusPrimitives, spacePrimitives, spaceSemantics } from './tokens';\nimport './Foundations.css';\n\nconst meta = {\n  title: 'Foundations/Spacing & radius',\n  tags: ['!autodocs'],\n  parameters: { controls: { disable: true } },\n} satisfies Meta;\n\nexport default meta;\ntype Story = StoryObj<typeof meta>;\n\n/** Figma collection \"space primitives\" */\nexport const SpacePrimitives: Story = {\n  render: () => (\n    <div className=\"fd\">\n      <section>\n        <h2>space primitives</h2>\n        <table>\n          <tbody>\n            {spacePrimitives.map(([name, value]) => (\n              <tr key={name}>\n                <td>\n                  <code>{figmaName(name)}</code>\n                </td>\n                <td>{value}</td>\n                <td>\n                  <div className=\"fd__bar\" style={{ width: `var(${name})` }} />\n                </td>\n              </tr>\n            ))}\n          </tbody>\n        </table>\n      </section>\n    </div>\n  ),\n};\n\nconst Alias = ({ value }: { value: string }) => {\n  const alias = aliasOf(value)!;\n  return (\n    <>\n      {modes.desktop[alias]} <code className=\"fd__muted\">{figmaName(alias)}</code>\n    </>\n  );\n};\n\n/** Figma collection \"space semantics\", modes >1280, >800 and <800 */\nexport const SpaceSemantics: Story = {\n  render: () => (\n    <div className=\"fd\">\n      <section>\n        <h2>space semantics</h2>\n        <table>\n          <thead>\n            <tr>\n              <th>Token</th>\n              <th>&gt;1280</th>\n              <th>&gt;800</th>\n              <th>&lt;800</th>\n            </tr>\n          </thead>\n          <tbody>\n            {spaceSemantics.map((name) => (\n              <tr key={name}>\n                <td>\n                  <code>{figmaName(name)}</code>\n                </td>\n                <td>\n                  <Alias value={modes.desktop[name]} />\n                </td>\n                <td>\n                  <Alias value={modes.tablet[name]} />\n                </td>\n                <td>\n                  <Alias value={modes.mobile[name]} />\n                </td>\n              </tr>\n            ))}\n          </tbody>\n        </table>\n      </section>\n    </div>\n  ),\n};\n\n/** Figma collection \"radius primitives\" */\nexport const Radius: Story = {\n  render: () => (\n    <div className=\"fd\">\n      <section>\n        <h2>radius primitives</h2>\n        <div style={{ display: 'flex', gap: 24 }}>\n          {radiusPrimitives.map(([name, value]) => (\n            <div className=\"fd__swatch\" key={name}>\n              <div className=\"fd__radius\" style={{ borderRadius: `var(${name})` }} />\n              <code>{figmaName(name)}</code>\n              <span className=\"fd__muted\">{value}</span>\n            </div>\n          ))}\n        </div>\n      </section>\n    </div>\n  ),\n};\n"
+      },
+      "stories": [
+        {
+          "id": "foundations-spacing-radius--space-primitives",
+          "name": "Space Primitives",
+          "snippet": "const SpacePrimitives = () => (\n  <div className=\"fd\">\n    <section>\n      <h2>space primitives</h2>\n      <table>\n        <tbody>\n          {spacePrimitives.map(([name, value]) => (\n            <tr key={name}>\n              <td>\n                <code>{figmaName(name)}</code>\n              </td>\n              <td>{value}</td>\n              <td>\n                <div className=\"fd__bar\" style={{ width: `var(${name})` }} />\n              </td>\n            </tr>\n          ))}\n        </tbody>\n      </table>\n    </section>\n  </div>\n);",
+          "description": "Figma collection \"space primitives\""
+        },
+        {
+          "id": "foundations-spacing-radius--space-semantics",
+          "name": "Space Semantics",
+          "snippet": "const SpaceSemantics = () => (\n  <div className=\"fd\">\n    <section>\n      <h2>space semantics</h2>\n      <table>\n        <thead>\n          <tr>\n            <th>Token</th>\n            <th>&gt;1280</th>\n            <th>&gt;800</th>\n            <th>&lt;800</th>\n          </tr>\n        </thead>\n        <tbody>\n          {spaceSemantics.map((name) => (\n            <tr key={name}>\n              <td>\n                <code>{figmaName(name)}</code>\n              </td>\n              <td>\n                <Alias value={modes.desktop[name]} />\n              </td>\n              <td>\n                <Alias value={modes.tablet[name]} />\n              </td>\n              <td>\n                <Alias value={modes.mobile[name]} />\n              </td>\n            </tr>\n          ))}\n        </tbody>\n      </table>\n    </section>\n  </div>\n);",
+          "description": "Figma collection \"space semantics\", modes >1280, >800 and <800"
+        },
+        {
+          "id": "foundations-spacing-radius--radius",
+          "name": "Radius",
+          "snippet": "const Radius = () => (\n  <div className=\"fd\">\n    <section>\n      <h2>radius primitives</h2>\n      <div style={{ display: 'flex', gap: 24 }}>\n        {radiusPrimitives.map(([name, value]) => (\n          <div className=\"fd__swatch\" key={name}>\n            <div className=\"fd__radius\" style={{ borderRadius: `var(${name})` }} />\n            <code>{figmaName(name)}</code>\n            <span className=\"fd__muted\">{value}</span>\n          </div>\n        ))}\n      </div>\n    </section>\n  </div>\n);",
+          "description": "Figma collection \"radius primitives\""
+        }
+      ]
+    },
+    "primitives-button": {
+      "id": "primitives-button",
+      "name": "Button",
+      "path": "./src/components/Button/Button.stories.tsx",
+      "jsDocTags": {},
+      "description": "Figma \"Button\": primary, secondary and tertiary, with hover, active and focus states.",
+      "reactDocgenTypescript": {
+        "tags": {},
+        "filePath": "/Users/annahorodecka/Desktop/Figma AI cohort/03 Week 3/design-system/src/components/Button/Button.tsx",
+        "description": "Figma \"Button\": primary, secondary and tertiary, with hover, active and focus states.",
+        "displayName": "Button",
+        "methods": [],
+        "props": {
+          "variant": {
+            "defaultValue": {
+              "value": "primary"
+            },
+            "description": "",
+            "name": "variant",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Button/Button.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "ButtonVariant",
+              "value": [
+                {
+                  "value": "\"primary\""
+                },
+                {
+                  "value": "\"secondary\""
+                },
+                {
+                  "value": "\"tertiary\""
+                }
+              ]
+            }
+          },
+          "state": {
+            "defaultValue": null,
+            "description": "Forces a visual state (for docs). Real hover/press/focus work without it.",
+            "name": "state",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Button/Button.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "ButtonState",
+              "value": [
+                {
+                  "value": "\"default\""
+                },
+                {
+                  "value": "\"hover\""
+                },
+                {
+                  "value": "\"active\""
+                },
+                {
+                  "value": "\"focus\""
+                }
+              ]
+            }
+          },
+          "text": {
+            "defaultValue": {
+              "value": "Label"
+            },
+            "description": "",
+            "name": "text",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Button/Button.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "showLeftIcon": {
+            "defaultValue": {
+              "value": "true"
+            },
+            "description": "",
+            "name": "showLeftIcon",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Button/Button.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "boolean"
+            }
+          },
+          "showRightIcon": {
+            "defaultValue": {
+              "value": "true"
+            },
+            "description": "",
+            "name": "showRightIcon",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Button/Button.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "boolean"
+            }
+          },
+          "swapIcon": {
+            "defaultValue": {
+              "value": "chevrons-right"
+            },
+            "description": "Figma: \"Swap icon\"",
+            "name": "swapIcon",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Button/Button.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "\"chevrons-right\" | \"arrow-right-long\" | \"xmark-large\" | \"bars\"",
+              "value": [
+                {
+                  "value": "\"chevrons-right\""
+                },
+                {
+                  "value": "\"arrow-right-long\""
+                },
+                {
+                  "value": "\"xmark-large\""
+                },
+                {
+                  "value": "\"bars\""
+                }
+              ]
+            }
+          },
+          "className": {
+            "defaultValue": null,
+            "description": "",
+            "name": "className",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Button/Button.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          }
+        },
+        "exportName": "Button"
+      },
+      "stories": [
+        {
+          "id": "primitives-button--primary",
+          "name": "Primary",
+          "snippet": "const Primary = () => <Button />;"
+        },
+        {
+          "id": "primitives-button--secondary",
+          "name": "Secondary",
+          "snippet": "const Secondary = () => <Button variant=\"secondary\" />;"
+        },
+        {
+          "id": "primitives-button--tertiary",
+          "name": "Tertiary",
+          "snippet": "const Tertiary = () => <Button variant=\"tertiary\" />;"
+        },
+        {
+          "id": "primitives-button--all-variants",
+          "name": "All Variants",
+          "snippet": "const AllVariants = () => (\n  <div style={{ display: 'grid', gridTemplateColumns: 'auto repeat(3, auto)', gap: 24, alignItems: 'center' }}>\n    <span />\n    {variants.map((v) => (\n      <strong key={v} style={{ fontFamily: 'var(--font-family-syne)', color: 'var(--text-primary)' }}>{v}</strong>\n    ))}\n    {states.map((s) => (\n      <Fragment key={s}>\n        <span style={{ fontFamily: 'var(--font-family-syne)', color: 'var(--text-secondary)' }}>{s}</span>\n        {variants.map((v) => (\n          <Button key={v + s} variant={v} state={s} />\n        ))}\n      </Fragment>\n    ))}\n  </div>\n);",
+          "description": "Every variant and state, laid out like the Figma component set."
+        }
+      ],
+      "import": "import { Button } from 'design-system';\nimport { Fragment } from 'react';"
+    },
+    "primitives-icon": {
+      "id": "primitives-icon",
+      "name": "Icon",
+      "path": "./src/components/Icon/Icon.stories.tsx",
+      "jsDocTags": {},
+      "description": "Figma \"Icons\" (light style). The SVG is used as a mask, so the icon\ntakes the current text colour and follows hover states and themes.",
+      "reactDocgenTypescript": {
+        "tags": {},
+        "filePath": "/Users/annahorodecka/Desktop/Figma AI cohort/03 Week 3/design-system/src/components/Icon/Icon.tsx",
+        "description": "Figma \"Icons\" (light style). The SVG is used as a mask, so the icon\ntakes the current text colour and follows hover states and themes.",
+        "displayName": "Icon",
+        "methods": [],
+        "props": {
+          "name": {
+            "defaultValue": null,
+            "description": "",
+            "name": "name",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Icon/Icon.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": true,
+            "type": {
+              "name": "enum",
+              "raw": "\"chevrons-right\" | \"arrow-right-long\" | \"xmark-large\" | \"bars\"",
+              "value": [
+                {
+                  "value": "\"chevrons-right\""
+                },
+                {
+                  "value": "\"arrow-right-long\""
+                },
+                {
+                  "value": "\"xmark-large\""
+                },
+                {
+                  "value": "\"bars\""
+                }
+              ]
+            }
+          },
+          "size": {
+            "defaultValue": {
+              "value": "24"
+            },
+            "description": "Size in px. Figma: 24 (library), 20 (in buttons), 32 (nav menu)",
+            "name": "size",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Icon/Icon.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "number"
+            }
+          },
+          "className": {
+            "defaultValue": null,
+            "description": "",
+            "name": "className",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Icon/Icon.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          }
+        },
+        "exportName": "Icon"
+      },
+      "stories": [
+        {
+          "id": "primitives-icon--default",
+          "name": "Default",
+          "snippet": "const Default = () => <Icon name=\"chevrons-right\" size={24} />;"
+        },
+        {
+          "id": "primitives-icon--all-icons",
+          "name": "All Icons",
+          "snippet": "const AllIcons = () => (\n  <div style={{ display: 'flex', gap: 32, fontFamily: 'var(--font-family-syne)', fontSize: 12 }}>\n    {iconNames.map((name) => (\n      <div key={name} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>\n        <Icon name={name} />\n        {name}\n      </div>\n    ))}\n  </div>\n);"
+        }
+      ],
+      "import": "import { Icon } from 'design-system';"
+    },
+    "primitives-link-button": {
+      "id": "primitives-link-button",
+      "name": "LinkButton",
+      "path": "./src/components/LinkButton/LinkButton.stories.tsx",
+      "jsDocTags": {},
+      "description": "Figma \"Link button\"",
+      "reactDocgenTypescript": {
+        "tags": {},
+        "filePath": "/Users/annahorodecka/Desktop/Figma AI cohort/03 Week 3/design-system/src/components/LinkButton/LinkButton.tsx",
+        "description": "Figma \"Link button\"",
+        "displayName": "LinkButton",
+        "methods": [],
+        "props": {
+          "state": {
+            "defaultValue": null,
+            "description": "Forces a visual state (for docs). Real hover/press/focus work without it.",
+            "name": "state",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/LinkButton/LinkButton.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "enum",
+              "raw": "LinkButtonState",
+              "value": [
+                {
+                  "value": "\"default\""
+                },
+                {
+                  "value": "\"hover\""
+                },
+                {
+                  "value": "\"active\""
+                },
+                {
+                  "value": "\"focus\""
+                }
+              ]
+            }
+          },
+          "text": {
+            "defaultValue": {
+              "value": "find out more  →"
+            },
+            "description": "",
+            "name": "text",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/LinkButton/LinkButton.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          }
+        },
+        "exportName": "LinkButton"
+      },
+      "stories": [
+        {
+          "id": "primitives-link-button--default",
+          "name": "Default",
+          "snippet": "const Default = () => <LinkButton />;"
+        },
+        {
+          "id": "primitives-link-button--all-states",
+          "name": "All States",
+          "snippet": "const AllStates = () => (\n  <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>\n    <LinkButton />\n    <LinkButton state=\"hover\" />\n    <LinkButton state=\"active\" />\n    <LinkButton state=\"focus\" />\n  </div>\n);"
+        }
+      ],
+      "import": "import { LinkButton } from 'design-system';"
+    },
+    "primitives-logo": {
+      "id": "primitives-logo",
+      "name": "Logo",
+      "path": "./src/components/Logo/Logo.stories.tsx",
+      "jsDocTags": {},
+      "description": "Figma \"Logo\": 48 × 48 circle, light and dark versions.",
+      "reactDocgenTypescript": {
+        "tags": {},
+        "filePath": "/Users/annahorodecka/Desktop/Figma AI cohort/03 Week 3/design-system/src/components/Logo/Logo.tsx",
+        "description": "Figma \"Logo\": 48 × 48 circle, light and dark versions.",
+        "displayName": "Logo",
+        "methods": [],
+        "props": {
+          "alt": {
+            "defaultValue": {
+              "value": ""
+            },
+            "description": "Accessible name. Leave empty when the logo is decorative.",
+            "name": "alt",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Logo/Logo.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "className": {
+            "defaultValue": null,
+            "description": "",
+            "name": "className",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Logo/Logo.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          }
+        },
+        "exportName": "Logo"
+      },
+      "stories": [
+        {
+          "id": "primitives-logo--default",
+          "name": "Default",
+          "snippet": "const Default = () => <Logo />;"
+        }
+      ],
+      "import": "import { Logo } from 'design-system';"
+    },
+    "layout-footer": {
+      "id": "layout-footer",
+      "name": "Footer",
+      "path": "./src/components/Footer/Footer.stories.tsx",
+      "jsDocTags": {},
+      "description": "Figma \"Footer\" (desktop, tablet, mobile). Defaults are the Figma component's text and link.",
+      "reactDocgenTypescript": {
+        "tags": {},
+        "filePath": "/Users/annahorodecka/Desktop/Figma AI cohort/03 Week 3/design-system/src/components/Footer/Footer.tsx",
+        "description": "Figma \"Footer\" (desktop, tablet, mobile). Defaults are the Figma component's text and link.",
+        "displayName": "Footer",
+        "methods": [],
+        "props": {
+          "copyright": {
+            "defaultValue": {
+              "value": "© 2026 Anna Horodecka"
+            },
+            "description": "",
+            "name": "copyright",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Footer/Footer.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "linkLabel": {
+            "defaultValue": {
+              "value": "Contact"
+            },
+            "description": "",
+            "name": "linkLabel",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Footer/Footer.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "linkHref": {
+            "defaultValue": {
+              "value": "https://www.linkedin.com/in/anna-horodecka-449037192"
+            },
+            "description": "",
+            "name": "linkHref",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Footer/Footer.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          }
+        },
+        "exportName": "Footer"
+      },
+      "stories": [
+        {
+          "id": "layout-footer--desktop",
+          "name": "Desktop",
+          "snippet": "const Desktop = () => <Footer />;"
+        },
+        {
+          "id": "layout-footer--tablet",
+          "name": "Tablet",
+          "snippet": "const Tablet = () => <Footer />;"
+        },
+        {
+          "id": "layout-footer--mobile",
+          "name": "Mobile",
+          "snippet": "const Mobile = () => <Footer />;"
+        }
+      ],
+      "import": "import { Footer } from 'design-system';"
+    },
+    "layout-navigation": {
+      "id": "layout-navigation",
+      "name": "Navigation",
+      "path": "./src/components/Navigation/Navigation.stories.tsx",
+      "jsDocTags": {},
+      "description": "Figma \"Navigation\" (desktop, tablet, mobile). Below 800px the links are\nreplaced by a menu button. The open menu has no design yet: the button\nonly swaps to the close icon and reports its state.",
+      "reactDocgenTypescript": {
+        "tags": {},
+        "filePath": "/Users/annahorodecka/Desktop/Figma AI cohort/03 Week 3/design-system/src/components/Navigation/Navigation.tsx",
+        "description": "Figma \"Navigation\" (desktop, tablet, mobile). Below 800px the links are\nreplaced by a menu button. The open menu has no design yet: the button\nonly swaps to the close icon and reports its state.",
+        "displayName": "Navigation",
+        "methods": [],
+        "props": {
+          "links": {
+            "defaultValue": {
+              "value": "[\n  { label: 'work.', href: '#work' },\n  { label: 'about.', href: '#about' },\n  { label: 'skills.', href: '#skills' },\n]"
+            },
+            "description": "",
+            "name": "links",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Navigation/Navigation.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "NavLink[]"
+            }
+          },
+          "contactLabel": {
+            "defaultValue": {
+              "value": "contact"
+            },
+            "description": "",
+            "name": "contactLabel",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Navigation/Navigation.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "contactHref": {
+            "defaultValue": {
+              "value": "#"
+            },
+            "description": "",
+            "name": "contactHref",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Navigation/Navigation.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "onMenuToggle": {
+            "defaultValue": null,
+            "description": "Called when the mobile menu button is toggled",
+            "name": "onMenuToggle",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Navigation/Navigation.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "((open: boolean) => void)"
+            }
+          }
+        },
+        "exportName": "Navigation"
+      },
+      "stories": [
+        {
+          "id": "layout-navigation--desktop",
+          "name": "Desktop",
+          "snippet": "const Desktop = () => <Navigation onMenuToggle={fn()} />;"
+        },
+        {
+          "id": "layout-navigation--tablet",
+          "name": "Tablet",
+          "snippet": "const Tablet = () => <Navigation onMenuToggle={fn()} />;"
+        },
+        {
+          "id": "layout-navigation--mobile",
+          "name": "Mobile",
+          "snippet": "const Mobile = () => <Navigation onMenuToggle={fn()} />;"
+        }
+      ],
+      "import": "import { Navigation } from 'design-system';\nimport { fn } from 'storybook/test';"
+    },
+    "sections-about": {
+      "id": "sections-about",
+      "name": "About",
+      "path": "./src/components/About/About.stories.tsx",
+      "jsDocTags": {},
+      "description": "Figma \"Section/About\" (desktop, tablet, mobile). On mobile the image goes on top.",
+      "reactDocgenTypescript": {
+        "tags": {},
+        "filePath": "/Users/annahorodecka/Desktop/Figma AI cohort/03 Week 3/design-system/src/components/About/About.tsx",
+        "description": "Figma \"Section/About\" (desktop, tablet, mobile). On mobile the image goes on top.",
+        "displayName": "About",
+        "methods": [],
+        "props": {
+          "headlineText": {
+            "defaultValue": {
+              "value": "Headline"
+            },
+            "description": "",
+            "name": "headlineText",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/About/About.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "contentText": {
+            "defaultValue": {
+              "value": "Welcome to my portfolio! I'm Kim, a passionate graphic UI designer dedicated to crafting visual experiences that resonate with users. My goal is to design interfaces that not only grab attention but also facilitate smooth navigation.  I carefully select colour palettes that evoke the right emotions and typography that enhances clarity. I believe that intuitive design is key to guiding users effortlessly on their journey."
+            },
+            "description": "Body text. A blank line starts a new paragraph.",
+            "name": "contentText",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/About/About.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "children": {
+            "defaultValue": null,
+            "description": "Square image slot. Defaults to the Figma placeholder.",
+            "name": "children",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/About/About.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "ReactNode"
+            }
+          },
+          "contactHref": {
+            "defaultValue": {
+              "value": "#"
+            },
+            "description": "",
+            "name": "contactHref",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/About/About.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "id": {
+            "defaultValue": null,
+            "description": "",
+            "name": "id",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/About/About.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          }
+        },
+        "exportName": "About"
+      },
+      "stories": [
+        {
+          "id": "sections-about--desktop",
+          "name": "Desktop",
+          "snippet": "const Desktop = () => <About />;"
+        },
+        {
+          "id": "sections-about--tablet",
+          "name": "Tablet",
+          "snippet": "const Tablet = () => <About />;"
+        },
+        {
+          "id": "sections-about--mobile",
+          "name": "Mobile",
+          "snippet": "const Mobile = () => <About />;"
+        }
+      ],
+      "import": "import { About } from 'design-system';"
+    },
+    "sections-hero": {
+      "id": "sections-hero",
+      "name": "Hero",
+      "path": "./src/components/Hero/Hero.stories.tsx",
+      "jsDocTags": {},
+      "description": "Figma \"Section/Hero\" (desktop, tablet, mobile).",
+      "reactDocgenTypescript": {
+        "tags": {},
+        "filePath": "/Users/annahorodecka/Desktop/Figma AI cohort/03 Week 3/design-system/src/components/Hero/Hero.tsx",
+        "description": "Figma \"Section/Hero\" (desktop, tablet, mobile).",
+        "displayName": "Hero",
+        "methods": [],
+        "props": {
+          "text": {
+            "defaultValue": {
+              "value": "UX . AI.\n PRODUCT   DESIGN."
+            },
+            "description": "Display title. Line breaks and spaces are kept.",
+            "name": "text",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Hero/Hero.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          }
+        },
+        "exportName": "Hero"
+      },
+      "stories": [
+        {
+          "id": "sections-hero--desktop",
+          "name": "Desktop",
+          "snippet": "const Desktop = () => <Hero />;"
+        },
+        {
+          "id": "sections-hero--tablet",
+          "name": "Tablet",
+          "snippet": "const Tablet = () => <Hero />;"
+        },
+        {
+          "id": "sections-hero--mobile",
+          "name": "Mobile",
+          "snippet": "const Mobile = () => <Hero />;"
+        }
+      ],
+      "import": "import { Hero } from 'design-system';"
+    },
+    "sections-picture": {
+      "id": "sections-picture",
+      "name": "Picture",
+      "path": "./src/components/Picture/Picture.stories.tsx",
+      "jsDocTags": {},
+      "description": "Figma \"Picture\": square photo. It fills its container; the Figma sizes\nare 440 (desktop), 356 (tablet), 327 (mobile). The default photo is\npre-cropped to the Figma framing.",
+      "reactDocgenTypescript": {
+        "tags": {},
+        "filePath": "/Users/annahorodecka/Desktop/Figma AI cohort/03 Week 3/design-system/src/components/Picture/Picture.tsx",
+        "description": "Figma \"Picture\": square photo. It fills its container; the Figma sizes\nare 440 (desktop), 356 (tablet), 327 (mobile). The default photo is\npre-cropped to the Figma framing.",
+        "displayName": "Picture",
+        "methods": [],
+        "props": {
+          "src": {
+            "defaultValue": null,
+            "description": "",
+            "name": "src",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Picture/Picture.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "alt": {
+            "defaultValue": {
+              "value": ""
+            },
+            "description": "",
+            "name": "alt",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Picture/Picture.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "className": {
+            "defaultValue": null,
+            "description": "",
+            "name": "className",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Picture/Picture.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          }
+        },
+        "exportName": "Picture"
+      },
+      "stories": [
+        {
+          "id": "sections-picture--sizes",
+          "name": "Sizes",
+          "snippet": "const Sizes = (args) => (\n  <div style={{ display: 'flex', gap: 40, alignItems: 'center' }}>\n    {[440, 356, 327].map((size) => (\n      <div key={size} style={{ width: size }}>\n        <Picture {...args} />\n      </div>\n    ))}\n  </div>\n);",
+          "description": "Figma sizes: 440 (desktop), 356 (tablet), 327 (mobile)"
+        }
+      ],
+      "import": "import { Picture } from 'design-system';"
+    },
+    "sections-project-card": {
+      "id": "sections-project-card",
+      "name": "ProjectCard",
+      "path": "./src/components/ProjectCard/ProjectCard.stories.tsx",
+      "jsDocTags": {},
+      "description": "Figma \"Section/ProjectCard\" (desktop, tablet, mobile).",
+      "reactDocgenTypescript": {
+        "tags": {},
+        "filePath": "/Users/annahorodecka/Desktop/Figma AI cohort/03 Week 3/design-system/src/components/ProjectCard/ProjectCard.tsx",
+        "description": "Figma \"Section/ProjectCard\" (desktop, tablet, mobile).",
+        "displayName": "ProjectCard",
+        "methods": [],
+        "props": {
+          "headlineText": {
+            "defaultValue": {
+              "value": "Headline"
+            },
+            "description": "",
+            "name": "headlineText",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/ProjectCard/ProjectCard.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "contentText": {
+            "defaultValue": {
+              "value": "I run moonlearning.io, a hands-on learning platform for UI design, Figma, and AI-powered product building. I cut through the noise and help people move from overthinking to designing and building."
+            },
+            "description": "",
+            "name": "contentText",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/ProjectCard/ProjectCard.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "hasBg": {
+            "defaultValue": {
+              "value": "true"
+            },
+            "description": "Warm background. Figma: \"Has bg\"",
+            "name": "hasBg",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/ProjectCard/ProjectCard.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "boolean"
+            }
+          },
+          "children": {
+            "defaultValue": null,
+            "description": "16:9 image slot. Defaults to the Figma placeholder.",
+            "name": "children",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/ProjectCard/ProjectCard.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "ReactNode"
+            }
+          },
+          "linkHref": {
+            "defaultValue": null,
+            "description": "",
+            "name": "linkHref",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/ProjectCard/ProjectCard.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          }
+        },
+        "exportName": "ProjectCard"
+      },
+      "stories": [
+        {
+          "id": "sections-project-card--desktop",
+          "name": "Desktop",
+          "snippet": "const Desktop = () => <ProjectCard />;"
+        },
+        {
+          "id": "sections-project-card--tablet",
+          "name": "Tablet",
+          "snippet": "const Tablet = () => <ProjectCard />;"
+        },
+        {
+          "id": "sections-project-card--mobile",
+          "name": "Mobile",
+          "snippet": "const Mobile = () => <ProjectCard />;"
+        },
+        {
+          "id": "sections-project-card--without-background",
+          "name": "Without Background",
+          "snippet": "const WithoutBackground = () => <ProjectCard hasBg={false} />;",
+          "description": "\"Has bg\" off: page background instead of the warm one"
+        }
+      ],
+      "import": "import { ProjectCard } from 'design-system';"
+    },
+    "sections-skill": {
+      "id": "sections-skill",
+      "name": "Skill",
+      "path": "./src/components/Skill/Skill.stories.tsx",
+      "jsDocTags": {},
+      "description": "Figma \"Skill\" (desktop, tablet, mobile).",
+      "reactDocgenTypescript": {
+        "tags": {},
+        "filePath": "/Users/annahorodecka/Desktop/Figma AI cohort/03 Week 3/design-system/src/components/Skill/Skill.tsx",
+        "description": "Figma \"Skill\" (desktop, tablet, mobile).",
+        "displayName": "Skill",
+        "methods": [],
+        "props": {
+          "titleText": {
+            "defaultValue": {
+              "value": "UX & Interaction Design"
+            },
+            "description": "",
+            "name": "titleText",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Skill/Skill.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "contentText": {
+            "defaultValue": {
+              "value": "I design complex flows that feel simple: bulk actions, edge cases, validation and error states. I think in user journeys, not single screens."
+            },
+            "description": "",
+            "name": "contentText",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Skill/Skill.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          }
+        },
+        "exportName": "Skill"
+      },
+      "stories": [
+        {
+          "id": "sections-skill--desktop",
+          "name": "Desktop",
+          "snippet": "const Desktop = () => <Skill />;"
+        },
+        {
+          "id": "sections-skill--tablet",
+          "name": "Tablet",
+          "snippet": "const Tablet = () => <Skill />;"
+        },
+        {
+          "id": "sections-skill--mobile",
+          "name": "Mobile",
+          "snippet": "const Mobile = () => <Skill />;"
+        }
+      ],
+      "import": "import { Skill } from 'design-system';"
+    },
+    "sections-skills": {
+      "id": "sections-skills",
+      "name": "Skills",
+      "path": "./src/components/Skills/Skills.stories.tsx",
+      "jsDocTags": {},
+      "description": "Figma \"Section/Skills\": 3-column grid on desktop/tablet, a single column on mobile.",
+      "reactDocgenTypescript": {
+        "tags": {},
+        "filePath": "/Users/annahorodecka/Desktop/Figma AI cohort/03 Week 3/design-system/src/components/Skills/Skills.tsx",
+        "description": "Figma \"Section/Skills\": 3-column grid on desktop/tablet, a single column on mobile.",
+        "displayName": "Skills",
+        "methods": [],
+        "props": {
+          "headlineText": {
+            "defaultValue": {
+              "value": "Headline"
+            },
+            "description": "",
+            "name": "headlineText",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Skills/Skills.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          },
+          "skills": {
+            "defaultValue": {
+              "value": "[{}, {}, {}]"
+            },
+            "description": "Skill items. Defaults to three default Skill instances, as in Figma.",
+            "name": "skills",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Skills/Skills.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "SkillProps[]"
+            }
+          },
+          "id": {
+            "defaultValue": null,
+            "description": "",
+            "name": "id",
+            "declarations": [
+              {
+                "fileName": "design-system/src/components/Skills/Skills.tsx",
+                "name": "TypeLiteral"
+              }
+            ],
+            "required": false,
+            "type": {
+              "name": "string"
+            }
+          }
+        },
+        "exportName": "Skills"
+      },
+      "stories": [
+        {
+          "id": "sections-skills--desktop",
+          "name": "Desktop",
+          "snippet": "const Desktop = () => <Skills />;"
+        },
+        {
+          "id": "sections-skills--tablet",
+          "name": "Tablet",
+          "snippet": "const Tablet = () => <Skills />;"
+        },
+        {
+          "id": "sections-skills--mobile",
+          "name": "Mobile",
+          "snippet": "const Mobile = () => <Skills />;"
+        }
+      ],
+      "import": "import { Skills } from 'design-system';"
+    }
+  },
+  "meta": {
+    "docgen": "react-docgen-typescript",
+    "durationMs": 1174
+  }
+}

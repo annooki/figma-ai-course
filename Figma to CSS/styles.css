@@ -1,809 +1,580 @@
-/* ==========================================================================
-   styles.css — every style and every variable for index.html lives here.
-
-   👋 HOW TO READ THIS FILE (a beginner's guide)
-   -------------------------------------------------------------------------
-   • Grey text like this, which starts with a slash-star and ends with a
-     star-slash, is a COMMENT: a note for humans. The browser ignores
-     comments completely, like a sticky note in Figma.
-
-   • CSS is a list of RULES. Every rule looks like this:
-
-         .button {                 ← WHICH thing to style (the "selector")
-           background: coral;      ← a PROPERTY and its VALUE
-           padding: 16px;          ← each line ends with a semicolon ;
-         }                         ← curly brackets wrap the rule
-
-   • A selector starting with a dot, like  .button , targets every element
-     in index.html that has  class="button" . A class works like a Figma
-     style: set it up once, then apply it to many layers.
-
-   • Words starting with two dashes, like  --coral-500 , are VARIABLES,
-     the same idea as Figma variables. We CREATE them once:
-         --coral-500: #e56a64;
-     and USE them anywhere by wrapping the name in  var( ) :
-         background: var(--coral-500);
-     Change the value in one place and it updates everywhere, just like Figma.
-
-   • px = pixels, the same unit Figma uses.
-
-   HOW THIS FILE IS ORGANISED (same order as your Figma variable collections):
-     0. Fonts
-     1. Primitives   — raw values (colour, space, radius, text)
-     2. Semantics    — named by PURPOSE, they point at primitives
-        2a. Space semantics   (change per breakpoint)
-        2b. Colour semantics  (change per light / dark mode)
-     3. Text styles  — one class per Figma text style
-     4. Base page styles
-     5. Components   — one block per Figma component, in page order:
-        Navigation, Hero, ProjectCard, About, Skills, Footer
-        (+ the shared button and link button components)
-     6. Layout changes for small screens
-
-   NAMING RULE: Figma name  →  CSS name
-     Figma "/" becomes "-" in CSS, because CSS names can't contain "/".
-     color/coral/500                 →  --coral-500
-     space semantics/card/padding-y  →  --card-padding-y
-     text style text/headline/md     →  .text-headline-md
-   ========================================================================== */
-
-
-/* ==========================================================================
-   0. FONTS
-   This line downloads Monoton, Poppins and Syne from Google Fonts, much like
-   installing a font before you can use it in Figma. It needs an internet
-   connection; without one the browser falls back to a system font.
-   "wght@400;500;700" = download the Regular, Medium and Bold weights.
-   ========================================================================== */
-@import url("https://fonts.googleapis.com/css2?family=Monoton&family=Poppins:wght@400;500;700&family=Syne:wght@400;500;700&display=swap");
-
-
-/* ==========================================================================
-   1. PRIMITIVES — the raw values, your "paint box".
-      Same as your Figma collections: colour / space / radius / text primitives.
-      Components should NOT use these directly; they use the semantic
-      variables in section 2, which point back here.
-
-   ":root" means "the whole page". Variables created inside :root can be
-   used anywhere on the page, like variables in a Figma file.
-   ========================================================================== */
+/* =========================================================
+   Design tokens (from Figma variables)
+   Desktop ≥1280 · Tablet 800–1279 · Mobile <800
+   ========================================================= */
 :root {
-  /* --- colour primitives / coral ---
-     Each line: the variable name, a colon, then the colour as a hex code
-     (the same hex you see in Figma's colour picker). */
-  --coral-50:  #fdf1f0;
-  --coral-100: #fadddb;
-  --coral-200: #f5bdb9;
-  --coral-300: #ef9993;
-  --coral-400: #ea7f78;
-  --coral-500: #e56a64;
-  --coral-600: #c14f49;
-  --coral-700: #9c3d38;
-  --coral-800: #772e2a;
-  --coral-900: #521f1d;
+  /* Colour — light */
+  --bg-page: #f9f8f8;
+  --bg-surface: #ffffff;
+  --bg-hero: #eee2d9;
+  --bg-warm: #f8f4f2;
+  --bg-inverse: #161616;
+  --text-primary: #252525;
+  --text-secondary: #393939;
+  --text-brand: #c14f49;
+  --text-inverse: #ffffff;
+  --action-primary-default: #ef9993;
+  --action-primary-hover: #ea7f78;
+  --action-primary-pressed: #e56a64;
+  --action-primary-text: #161616;
+  --action-tertiary-default: #393939;
+  --action-tertiary-hover: #9c3d38;
+  --action-tertiary-pressed: #393939;
+  --action-tertiary-underline: #ea7f78;
+  --border-default: #393939;
+  --border-focus: #ea7f78;
+  --text-link-hover: #9c3d38;
 
-  /* --- colour primitives / sand --- */
-  --sand-50:  #fcfaf9;
-  --sand-100: #f8f4f2;
-  --sand-200: #eee2d9;
-  --sand-300: #e0cdbf;
-  --sand-400: #cdb3a1;
-  --sand-500: #b59784;
-  --sand-600: #977a67;
-  --sand-700: #765f50;
-  --sand-800: #56453a;
-  --sand-900: #382d26;
+  /* Fonts */
+  --font-syne: "Syne", sans-serif;
+  --font-poppins: "Poppins", sans-serif;
+  --font-monoton: "Monoton", cursive;
 
-  /* --- colour primitives / neutral --- */
-  --base-white:  #ffffff; /* Figma: color/neutral/00  */
-  --neutral-50:  #f9f8f8;
-  --neutral-100: #f2f1f1;
-  --neutral-200: #e9e7e7;
-  --neutral-300: #d4d1d1;
-  --neutral-400: #a8a5a5;
-  --neutral-500: #8a8787;
-  --neutral-600: #666666;
-  --neutral-700: #393939;
-  --neutral-800: #2c2c2c;
-  --neutral-900: #252525;
-  --neutral-950: #161616;
-  --base-black:  #000000; /* Figma: color/neutral/999 */
-
-  /* --- space primitives (used for padding and gaps) --- */
-  --space-2:  2px;
-  --space-4:  4px;
-  --space-8:  8px;
-  --space-12: 12px;
-  --space-16: 16px;
-  --space-20: 20px;
-  --space-24: 24px;
-  --space-32: 32px;
-  --space-40: 40px;
-  --space-48: 48px;
-  --space-64: 64px;
-
-  /* --- radius primitives (Figma: corner radius) --- */
-  --radius-4:    4px;
-  --radius-8:    8px;
-  --radius-12:   12px;
-  --radius-16:   16px;
-  --radius-24:   24px;
-  --radius-full: 999px;   /* so big that any shape becomes a pill or circle */
-
-  /* --- text primitives (font family + weight never change) ---
-     The second name after the comma is a backup font in case the
-     first one hasn't loaded ("cursive" and "sans-serif" are generic types). */
-  --font-family-monoton: "Monoton", cursive;
-  --font-family-syne:    "Syne", sans-serif;
-  --font-family-poppins: "Poppins", sans-serif;
-
-  /* Font weights as numbers: 400 = Regular, 500 = Medium, 700 = Bold */
-  --font-weight-regular: 400;
-  --font-weight-medium:  500;
-  --font-weight-bold:    700;
-
-  /* --- text primitives: font sizes ---
-     These are the values from your Figma mode "<800" (small screens).
-     Section 2a below swaps them for bigger values on bigger screens. */
+  /* Font sizes — desktop */
   --font-size-100: 16px;
-  --font-size-200: 20px;
-  --font-size-300: 20px;
-  --font-size-400: 24px;
-  --font-size-500: 32px;
-  --font-size-700: 40px;
+  --font-size-200: 24px;
+  --font-size-300: 28px;
+  --font-size-400: 40px;
+  --font-size-500: 48px;
+  --font-size-500-about: 48px;
+  --font-size-700: 64px;
+
+  /* Spacing — desktop */
+  --page-padding-x: 40px;
+  --navigation-padding-y: 16px;
+  --navigation-gap: 24px;
+  --navigation-height: 84px;
+  --hero-padding-y: 64px;
+  --section-padding: 40px;
+  --content-gap-sm: 16px;
+  --content-gap-md: 24px;
+  --content-gap-lg: 32px;
+  --content-gap-xl: 40px;
+  --grid-gap: 32px;
+  --button-gap: 8px;
+  --button-padding-x: 24px;
+  --button-padding-y: 16px;
+  --button-tertiary-padding-x: 8px;
+  --button-tertiary-padding-y: 4px;
+  --radius: 8px;
+
+  --container-max: 1200px;
+  --decoration-size: 160px;
+  --about-image-size: 440px;
+  --skill-max: 380px;
 }
 
-
-/* ==========================================================================
-   2a. SPACE SEMANTICS — named by PURPOSE ("card padding"), not by size.
-       Each one points at a primitive using var( ).
-
-   📱 HOW BREAKPOINT MODES WORK IN CSS
-   In Figma you switch a frame between the modes ">1280", ">800" and "<800".
-   In CSS the browser switches automatically based on the window width,
-   using "@media" rules. Read
-       @media (min-width: 800px) { ... }
-   as "only when the window is AT LEAST 800px wide, use these values".
-
-   We start with the smallest screen ("mobile first"), then overwrite only
-   the values that change as the screen gets bigger. Later rules win.
-   ========================================================================== */
-
-/* Figma mode "<800": the starting values for every screen size */
-:root {
-  --section-padding-y:    var(--space-24);   /* "y" = top and bottom */
-  --section-gap:          var(--space-24);
-  --card-padding-y:       var(--space-24);
-  --content-gap-xs:       var(--space-8);    /* Figma: content/gap-100 */
-  --content-gap-sm:       var(--space-16);   /* Figma: content/gap-200 */
-  --content-gap-md:       var(--space-16);   /* Figma: content/gap-300 */
-  --content-gap-lg:       var(--space-24);   /* Figma: content/gap-400 */
-  --hero-padding-y:       var(--space-40);
-  --navigation-padding-y: var(--space-16);
-  --navigation-gap:       var(--space-40);
-  --footer-padding-y:     var(--space-20);
-  --footer-gap:           var(--space-24);
-  --button-padding-y:     var(--space-16);
-  --button-padding-x:     var(--space-24);   /* "x" = left and right */
-  --button-gap:           var(--space-8);
-  --button-tertiary-padding-top:    var(--space-4);
-  --button-tertiary-padding-bottom: var(--space-2);
-  --button-tertiary-padding-x:      var(--space-8);
-  --page-padding-x:       var(--space-24);
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-page: #161616;
+    --bg-surface: #252525;
+    --bg-hero: #2c2c2c;
+    --bg-warm: #252525;
+    --bg-inverse: #2c2c2c;
+    --text-primary: #f9f8f8;
+    --text-secondary: #d4d1d1;
+    --text-brand: #ea7f78;
+    --text-inverse: #f9f8f8;
+    --action-primary-default: #e56a64;
+    --action-primary-hover: #ea7f78;
+    --action-primary-pressed: #c14f49;
+    --action-primary-text: #161616;
+    --action-tertiary-default: #d4d1d1;
+    --action-tertiary-hover: #ef9993;
+    --action-tertiary-pressed: #d4d1d1;
+    --action-tertiary-underline: #ef9993;
+    --border-default: #a8a5a5;
+    --border-focus: #ef9993;
+    --text-link-hover: #ef9993;
+  }
 }
 
-/* Figma mode ">800": windows 800px wide or more.
-   Only the values that change are listed; everything else keeps the
-   value from the block above. */
-@media (min-width: 800px) {
+/* Tablet */
+@media (max-width: 1279px) {
   :root {
     --font-size-200: 20px;
     --font-size-300: 24px;
     --font-size-400: 32px;
-    --font-size-500: 40px;
+    --font-size-500-about: 40px;
     --font-size-700: 48px;
-
-    --section-padding-y: var(--space-40);
-    --section-gap:       var(--space-32);
-    --card-padding-y:    var(--space-40);
-    --content-gap-md:    var(--space-24);
-    --content-gap-lg:    var(--space-32);
-    --hero-padding-y:    var(--space-48);
-    --page-padding-x:    var(--space-40);
+    --hero-padding-y: 48px;
+    --section-padding: 32px;
+    --content-gap-md: 16px;
+    --content-gap-lg: 24px;
+    --content-gap-xl: 24px;
+    --grid-gap: 24px;
+    --container-max: 736px;
+    --decoration-size: 140px;
+    --skill-max: 230px;
   }
 }
 
-/* Figma mode ">1280": windows 1280px wide or more (desktop) */
-@media (min-width: 1280px) {
+/* Mobile */
+@media (max-width: 799px) {
   :root {
-    --font-size-200: 24px;
-    --font-size-300: 28px;
-    --font-size-400: 40px;
-    --font-size-500: 48px;
-    --font-size-700: 64px;
-
-    --section-gap:    var(--space-64);
-    --hero-padding-y: var(--space-64);
+    --font-size-300: 20px;
+    --font-size-400: 24px;
+    --font-size-500-about: 32px;
+    --font-size-700: 40px;
+    --page-padding-x: 24px;
+    --navigation-height: 80px;
+    --hero-padding-y: 40px;
+    --section-padding: 24px;
+    --decoration-size: 120px;
   }
 }
 
-
-/* ==========================================================================
-   2b. COLOUR SEMANTICS — named by PURPOSE ("page background", "brand text").
-
-   🌗 HOW LIGHT / DARK MODES WORK IN CSS
-   The first block is your Figma mode "light". The second block is your
-   Figma mode "dark": it uses the SAME variable names with different values.
-   "@media (prefers-color-scheme: dark)" means "only when the visitor's
-   computer is set to dark mode". To try it on a Mac:
-   System Settings → Appearance → Dark, then look at the page again.
-   ========================================================================== */
-
-/* Figma mode "light" */
-:root {
-  /* text colours */
-  --text-primary:    var(--neutral-900);
-  --text-secondary:  var(--neutral-700);
-  --text-inverse:    var(--base-white);     /* text on dark backgrounds */
-  --text-brand:      var(--coral-600);
-  --text-link-hover: var(--coral-600);
-
-  /* background colours ("bg") */
-  --bg-page:    var(--neutral-50);
-  --bg-surface: var(--base-white);
-  --bg-warm:    var(--sand-100);
-  --bg-hero:    var(--sand-200);
-  --bg-inverse: var(--neutral-950);
-
-  /* border (Figma: stroke) colours */
-  --border-default: var(--neutral-700);
-  --border-brand:   var(--coral-500);
-  --border-focus:   var(--coral-400);
-
-  --decoration-accent: var(--coral-500);
-  --icon-default:      var(--neutral-900);
-
-  /* button colours: default / hover (mouse over) / pressed (clicking) */
-  --action-primary-default: var(--coral-500);
-  --action-primary-hover:   var(--coral-400);
-  --action-primary-pressed: var(--coral-600);
-  --action-primary-text:    var(--base-white);
-  --action-primary-icon:    var(--base-white);
-
-  --action-secondary-default: var(--neutral-700);
-  --action-secondary-hover:   var(--coral-400);
-  --action-secondary-pressed: var(--neutral-700);
-  --action-secondary-bg:      var(--neutral-50);
-  --action-secondary-text:    var(--neutral-900);
-  --action-secondary-icon:    var(--neutral-900);
-
-  --action-tertiary-default:    var(--neutral-700);
-  --action-tertiary-hover:      var(--coral-600);
-  --action-tertiary-pressed:    var(--neutral-700);
-  --action-tertiary-underline:  var(--coral-400);
-  --action-tertiary-icon:       var(--neutral-700);
-  --action-tertiary-icon-hover: var(--coral-600);
-}
-
-/* Figma mode "dark": same names, different values */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text-primary:    var(--neutral-50);
-    --text-secondary:  var(--neutral-300);
-    --text-inverse:    var(--neutral-50);
-    --text-brand:      var(--coral-400);
-    --text-link-hover: var(--coral-300);
-
-    --bg-page:    var(--neutral-950);
-    --bg-surface: var(--neutral-900);
-    --bg-warm:    var(--neutral-900);
-    --bg-hero:    var(--neutral-800);
-    --bg-inverse: var(--neutral-800);
-
-    --border-default: var(--neutral-400);
-    --border-brand:   var(--coral-400);
-    --border-focus:   var(--coral-300);
-
-    --decoration-accent: var(--coral-700);
-    --icon-default:      var(--neutral-50);
-
-    --action-primary-default: var(--coral-500);
-    --action-primary-hover:   var(--coral-400);
-    --action-primary-pressed: var(--coral-600);
-    --action-primary-text:    var(--neutral-950);
-    --action-primary-icon:    var(--neutral-950);
-
-    --action-secondary-default: var(--neutral-400);
-    --action-secondary-hover:   var(--coral-300);
-    --action-secondary-pressed: var(--neutral-400);
-    --action-secondary-bg:      var(--neutral-950);
-    --action-secondary-text:    var(--neutral-50);
-    --action-secondary-icon:    var(--neutral-50);
-
-    --action-tertiary-default:    var(--neutral-300);
-    --action-tertiary-hover:      var(--coral-300);
-    --action-tertiary-pressed:    var(--neutral-300);
-    --action-tertiary-underline:  var(--coral-300);
-    --action-tertiary-icon:       var(--neutral-200);
-    --action-tertiary-icon-hover: var(--coral-300);
-  }
-}
-
-
-/* ==========================================================================
-   3. TEXT STYLES — one class per Figma text style.
-      Figma "text/headline/md"  →  CSS ".text-headline-md"
-
-   In index.html you apply one like this:
-       <h2 class="text-headline-md">About me</h2>
-
-   Font size, family and weight come from variables, so they resize
-   automatically at each breakpoint. Line height and letter spacing are
-   typed in by hand because they aren't variables in Figma yet.
-
-   Figma uses % for line height and letter spacing. CSS writes them as:
-     line-height: 1.2      = 120%  (1.2 × the font size)
-     letter-spacing: 0.02em = 2%   ("em" means "× the font size")
-   ========================================================================== */
-.text-display-md {
-  font-family: var(--font-family-monoton);
-  font-weight: var(--font-weight-regular);
-  font-size: var(--font-size-700);
-  line-height: 1.2;           /* 120% */
-  letter-spacing: 0.02em;     /* 2%   */
-  text-transform: uppercase;  /* Figma: Case → UPPER CASE */
-}
-
-.text-headline-lg {
-  font-family: var(--font-family-syne);
-  font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-500);
-  line-height: 1.45;          /* 145% */
-  letter-spacing: -0.02em;    /* -2%  */
-}
-
-.text-headline-md {
-  font-family: var(--font-family-syne);
-  font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-400);
-  line-height: 1.25;          /* 125% */
-  letter-spacing: -0.02em;
-}
-
-.text-headline-sm {
-  font-family: var(--font-family-syne);
-  font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-200);
-  line-height: 1.45;
-  letter-spacing: -0.005em;   /* -0.5% */
-}
-
-.text-subtitle-md {
-  font-family: var(--font-family-syne);
-  font-weight: var(--font-weight-regular);
-  font-size: var(--font-size-300);
-  line-height: 1.45;
-  letter-spacing: -0.005em;
-}
-
-.text-body-md {
-  font-family: var(--font-family-poppins);
-  font-weight: var(--font-weight-regular);
-  font-size: var(--font-size-100);
-  line-height: 1.7;           /* 170% */
-  letter-spacing: -0.005em;
-}
-
-/* Two selectors separated by a comma share the same rule: button/md and
-   label/md are identical in Figma, so they're written once here. */
-.text-button-md,
-.text-label-md {
-  font-family: var(--font-family-syne);
-  font-weight: var(--font-weight-medium);
-  font-size: var(--font-size-100);
-  line-height: 20px;          /* Figma uses a fixed 20px here, not a % */
-  letter-spacing: 0;
-}
-
-.text-link-md {
-  font-family: var(--font-family-syne);
-  font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-100);
-  line-height: 1.7;
-  letter-spacing: -0.02em;
-}
-
-.text-link-md-subtle {
-  font-family: var(--font-family-syne);
-  font-weight: var(--font-weight-medium);
-  font-size: var(--font-size-100);
-  line-height: 20px;
-  letter-spacing: 0;
-  text-decoration: underline;
-}
-
-
-/* ==========================================================================
-   4. BASE PAGE STYLES
-   Browsers add their own default styles (extra margins, etc.).
-   These rules reset them so the page matches Figma.
-   ========================================================================== */
-
-/* "*" means "every element". border-box makes width include the padding,
-   which is how Figma measures frames too. */
-* {
+/* =========================================================
+   Base
+   ========================================================= */
+*,
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
-/* <body> is the whole visible page, like the top-level Figma frame */
 body {
-  margin: 0;                         /* remove the browser's default 8px edge */
-  background: var(--bg-page);        /* Figma: frame fill */
-  color: var(--text-primary);        /* default text colour */
+  margin: 0;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-poppins);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Headings (h1, h2, h3) and paragraphs (p) get extra space from the
-   browser by default; we remove it and use gap variables instead. */
 h1, h2, h3, p {
   margin: 0;
 }
 
-/* Images: never wider than their container */
 img {
   display: block;
-  max-width: 100%;
 }
 
-/* Every section's colour stretches full width across the window, but
-   .container keeps the CONTENT inside the 1280px frame width from Figma
-   and adds the left/right page padding. */
-.container {
-  max-width: 1280px;
-  margin: 0 auto;                            /* "auto" = centre it */
-  padding-left: var(--page-padding-x);
-  padding-right: var(--page-padding-x);
+a {
+  color: inherit;
 }
 
-/* The outline you see when you move through links with the Tab key
-   (important for people who use a keyboard instead of a mouse) */
-:focus-visible {
-  outline: 2px solid var(--border-focus);
-  outline-offset: 2px;
+/* =========================================================
+   Typography (Figma text styles)
+   ========================================================= */
+.body-text {                      /* text/body/md */
+  font-family: var(--font-poppins);
+  font-size: var(--font-size-100);
+  font-weight: 400;
+  line-height: 1.7;
+  letter-spacing: -0.005em;
+  color: var(--text-secondary);
 }
 
+.link {                           /* text/link/md */
+  font-family: var(--font-syne);
+  font-size: var(--font-size-100);
+  font-weight: 700;
+  line-height: 1.7;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+  text-decoration: none;
+  white-space: pre;
+  display: inline-block;
+}
 
-/* ==========================================================================
-   5. COMPONENTS
+/* Link button states (Figma: Link button) */
+.link:hover {
+  color: var(--text-link-hover);
+}
 
-   🧩 FIGMA AUTO LAYOUT → CSS CHEAT SHEET
-   display: flex;               = turn on auto layout
-   flex-direction: column;      = vertical auto layout (no line = horizontal)
-   gap: 16px;                   = spacing between items
-   padding: 16px 24px;          = padding (top/bottom first, then left/right)
-   align-items: center;         = alignment across the direction
-   justify-content: center;     = alignment along the direction
-   justify-content: space-between; = Figma's "Auto" spacing
-   flex-wrap: wrap;             = Figma's "Wrap"
+.link:focus-visible,
+.link:active {
+  outline: none;
+  color: var(--text-primary);
+  box-shadow: inset 0 -2px 0 var(--border-focus);
+}
 
-   display: grid; grid-template-columns: 1fr 1fr;
-                                = two equal columns side by side
-                                  ("1fr" = one share of the free space)
-
-   NAMING: ".nav__links" means "the links part INSIDE the nav component".
-   ".button--primary" means "the primary VARIANT of the button".
-   This is a common naming habit called BEM. You can read "__" as
-   "child layer" and "--" as "variant".
-   ========================================================================== */
-
-/* --- button (Figma component "button") ---
-   Shared by every variant: auto layout, centred, 8px corners. */
-.button {
-  display: inline-flex;              /* auto layout that sits inline with text */
+/* =========================================================
+   Buttons
+   ========================================================= */
+.btn {                            /* text/button/md */
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--button-gap);
-  border-radius: var(--radius-8);
-  text-decoration: none;             /* links are underlined by default; remove it */
-  cursor: pointer;                   /* show the "hand" cursor on hover */
+  border-radius: var(--radius);
+  font-family: var(--font-syne);
+  font-size: var(--font-size-100);
+  font-weight: 500;
+  line-height: 20px;
+  text-align: center;
+  text-decoration: none;
 }
 
-/* variant=primary (the filled coral button) */
-.button--primary {
+.btn--primary {
+  min-width: 112px;
   padding: var(--button-padding-y) var(--button-padding-x);
   background: var(--action-primary-default);
   color: var(--action-primary-text);
 }
 
-/* ":hover" = while the mouse is over it (Figma state=hover)
-   ":active" = while it's being clicked (Figma state=active) */
-.button--primary:hover  { background: var(--action-primary-hover); }
-.button--primary:active { background: var(--action-primary-pressed); }
+/* Primary states (Figma: Button variant=primary) */
+.btn--primary:hover {
+  background: var(--action-primary-hover);
+}
 
-/* variant=tertiary (text-only button, used in the nav) */
-.button--tertiary {
-  /* padding with 3 values = top, left/right, bottom */
-  padding: var(--button-tertiary-padding-top) var(--button-tertiary-padding-x) var(--button-tertiary-padding-bottom);
+.btn--primary:focus-visible {
+  outline: 2px solid var(--border-default);
+  outline-offset: -2px;
+}
+
+.btn--primary:active {
+  background: var(--action-primary-pressed);
+}
+
+.btn--tertiary {
+  min-width: 80px;
+  padding: var(--button-tertiary-padding-y) var(--button-tertiary-padding-x);
   color: var(--action-tertiary-default);
 }
-.button--tertiary:hover  { color: var(--action-tertiary-hover); }
-.button--tertiary:active {
+
+/* Label wrapper: 20px tall incl. 2px bottom space for the underline */
+.btn__label {
+  display: inline-block;
+  height: 20px;
+  padding-bottom: 2px;
+  line-height: 18px;
+}
+
+/* Tertiary states (Figma: Button variant=tertiary) */
+.btn--tertiary:hover {
+  color: var(--action-tertiary-hover);
+}
+
+.btn--tertiary:focus-visible {
+  outline: none;
+  color: var(--action-tertiary-default);
+}
+
+.btn--tertiary:active {
   color: var(--action-tertiary-pressed);
-  text-decoration: underline;
-  text-decoration-color: var(--action-tertiary-underline);
 }
 
-/* --- link button (Figma component "link button": "find out more →") --- */
-.link-button {
-  color: var(--text-primary);
-  text-decoration: none;
+.btn--tertiary:focus-visible .btn__label,
+.btn--tertiary:active .btn__label {
+  box-shadow: inset 0 -2px 0 var(--action-tertiary-underline);
 }
-.link-button:hover { color: var(--text-link-hover); }
 
-/* --- Navigation --- */
+/* =========================================================
+   Navigation
+   ========================================================= */
 .nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--navigation-height);
+  padding: var(--navigation-padding-y) var(--page-padding-x);
   background: var(--bg-surface);
 }
 
-/* Horizontal auto layout: logo on the left, links on the right */
-.nav__inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;    /* push logo and links to opposite ends */
-  flex-wrap: wrap;
-  padding-top: var(--navigation-padding-y);
-  padding-bottom: var(--navigation-padding-y);
-}
-
-/* The coral circle logo */
-.nav__logo {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-full);   /* full radius turns the square into a circle */
-  background: var(--decoration-accent);
-}
-
-/* The row of links: horizontal auto layout with a 40px gap */
 .nav__links {
   display: flex;
   align-items: center;
   gap: var(--navigation-gap);
 }
 
-/* Mobile menu. The hamburger is secretly a checkbox: tapping the icon
-   ticks the box, and section 6 shows the links while it's ticked.
-   This works without any JavaScript. On bigger screens the hamburger
-   is hidden and the links are always visible. */
-.nav__toggle-input {
-  position: absolute;                /* take it out of the layout... */
-  opacity: 0;                        /* ...and make it invisible */
-}
-
-.nav__toggle {
-  display: none;                     /* "none" = hidden (turned on in section 6) */
-  width: 32px;
-  height: 32px;
-  align-items: center;
-  justify-content: center;
-  color: var(--icon-default);
+.nav__menu {
+  display: none;
+  padding: 0;
+  border: 0;
+  background: none;
   cursor: pointer;
 }
 
-/* --- Hero --- */
+/* =========================================================
+   Hero
+   ========================================================= */
 .hero {
+  display: flex;
+  justify-content: center;
+  padding: var(--hero-padding-y) var(--page-padding-x);
   background: var(--bg-hero);
 }
 
-/* Vertical auto layout, everything centred */
-.hero__inner {
+.hero__container {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--content-gap-sm);
-  padding-top: var(--hero-padding-y);
-  padding-bottom: var(--hero-padding-y);
+  width: 100%;
+  max-width: var(--container-max);
   text-align: center;
 }
 
-.hero__name  { color: var(--text-primary); }
-.hero__title { color: var(--text-brand); }
-
-/* --- ProjectCard ---
-   Your Figma component has a "Bg colour" property (White / Pale).
-   In CSS that's a base class plus an extra "variant" class. */
-.project-card {
-  background: var(--bg-page);           /* Figma: Bg colour=White */
+.hero__name {                     /* text/subtitle/md */
+  font-family: var(--font-syne);
+  font-size: var(--font-size-300);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  color: var(--text-primary);
 }
 
-.project-card--pale {
-  background: var(--bg-warm);           /* Figma: Bg colour=Pale */
+.hero__title {                    /* text/display/md */
+  font-family: var(--font-monoton);
+  font-size: var(--font-size-700);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  white-space: pre-wrap;
+  color: var(--text-brand);
 }
 
-/* Image on the left, text on the right: two equal columns */
-.project-card__inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--section-gap);
-  padding-top: var(--card-padding-y);
-  padding-bottom: var(--card-padding-y);
+.hero__title span {
+  display: block;
 }
 
-.project-card__image {
-  width: 100%;
-  aspect-ratio: 16 / 9;                  /* keep a 16:9 shape at any width */
-  object-fit: cover;                     /* Figma image fill mode: "Fill" */
-}
-
-/* Vertical auto layout: headline, text, link */
-.project-card__content {
+/* =========================================================
+   Project card
+   ========================================================= */
+.project {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;               /* align left (so the link doesn't stretch) */
-  gap: var(--content-gap-md);
+  justify-content: center;
+  padding: var(--section-padding);
+  background: var(--bg-page);
 }
 
-.project-card__text {
-  color: var(--text-secondary);
+.project--warm {
+  background: var(--bg-warm);
 }
 
-/* --- About --- */
-/* Text on the left, photo on the right: two equal columns */
-.about__inner {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  align-items: center;                   /* centre them vertically */
-  gap: var(--section-gap);
-  padding-top: var(--section-padding-y);
-  padding-bottom: var(--section-padding-y);
+.project__container {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--content-gap-xl);
+  width: 100%;
+  max-width: var(--container-max);
 }
 
-/* Vertical auto layout: text block, then the contact button */
-.about__content {
+.project__image {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  aspect-ratio: 16 / 9;
+}
+
+.project__image img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.project__content {
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  gap: var(--content-gap-md);
+}
+
+.project__title {                 /* text/headline/md */
+  font-family: var(--font-syne);
+  font-size: var(--font-size-400);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+/* =========================================================
+   About
+   ========================================================= */
+.about {
+  display: flex;
+  justify-content: center;
+  padding: var(--section-padding);
+  background: var(--bg-page);
+}
+
+.about__container {
+  display: flex;
+  align-items: center;
+  gap: var(--content-gap-xl);
+  width: 100%;
+  max-width: var(--container-max);
+}
+
+.about__content {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
   gap: var(--content-gap-lg);
 }
 
-/* Vertical auto layout: heading and paragraphs */
 .about__text {
   display: flex;
   flex-direction: column;
-  gap: var(--content-gap-md);
-  color: var(--text-secondary);
+  gap: 12px;                       /* paragraph spacing */
 }
 
-.about__title {
+.about__title {                   /* text/headline/lg */
+  margin-bottom: calc(var(--content-gap-md) - 12px);
+  font-family: var(--font-syne);
+  font-size: var(--font-size-500-about);
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.02em;
   color: var(--text-primary);
 }
 
 .about__image {
+  flex: 0 0 var(--about-image-size);
+  aspect-ratio: 1 / 1;
+}
+
+/* Photo is pre-cropped to the Figma framing */
+.about__image img {
   width: 100%;
-  aspect-ratio: 1 / 1;                   /* square, like the Figma frame */
-  object-fit: cover;
+  height: 100%;
 }
 
-/* --- Skills --- */
-.skills__inner {
-  position: relative;                   /* lets the circle be placed relative to this box */
+/* =========================================================
+   Skills
+   ========================================================= */
+.skills {
   display: flex;
-  flex-direction: column;
-  gap: var(--section-gap);
-  padding-top: var(--section-padding-y);
-  padding-bottom: var(--section-padding-y);
+  justify-content: center;
+  padding: var(--section-padding);
+  background: var(--bg-page);
 }
 
-/* The decorative pink circle (Figma: "Ellipse 3", 50% opacity).
-   "position: absolute" = Figma's "Ignore auto layout" (absolute position).
-   top/right say how far from the top-right corner it sits. */
-.skills__circle {
-  position: absolute;
-  top: var(--section-padding-y);
-  right: var(--page-padding-x);
-  width: 170px;
-  height: 170px;
-  border-radius: var(--radius-full);
-  background: var(--decoration-accent);
-  opacity: 0.5;                          /* 50% layer opacity */
-}
-
-/* Keep the text in FRONT of the circle (like layer order in Figma).
-   Read the selector as: "every direct child of .skills__inner
-   except the circle". */
-.skills__inner > *:not(.skills__circle) {
+.skills__container {
   position: relative;
-}
-
-/* Three equal columns ("repeat 3 times: 1fr") */
-.skills__list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--section-gap);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--grid-gap);
+  width: 100%;
+  max-width: var(--container-max);
 }
 
-/* One skill: vertical auto layout, title then text */
+.skills__decoration {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.skills__decoration img {
+  width: var(--decoration-size);
+  height: var(--decoration-size);
+}
+
+.skills__title {                  /* text/headline/lg */
+  position: relative;
+  grid-column: 1 / -1;
+  font-family: var(--font-syne);
+  font-size: var(--font-size-500);
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
 .skill {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--content-gap-sm);
+  max-width: var(--skill-max);
 }
 
-.skill__text {
-  color: var(--text-secondary);
+.skill__title {                   /* text/headline/sm */
+  font-family: var(--font-syne);
+  font-size: var(--font-size-200);
+  font-weight: 700;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  color: var(--text-primary);
 }
 
-/* --- Footer --- */
+/* =========================================================
+   Footer
+   ========================================================= */
 .footer {
-  background: var(--bg-inverse);
-  color: var(--text-inverse);
-}
-
-/* Horizontal auto layout, centred: "© 2026 …  •  Contact" */
-.footer__inner {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: var(--footer-gap);
-  padding-top: var(--footer-padding-y);
-  padding-bottom: var(--footer-padding-y);
-}
-
-/* The small dot between the two texts */
-.footer__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: var(--radius-full);
-  background: var(--text-inverse);
-}
-
-/* ".footer a" = any link (<a>) INSIDE the footer */
-.footer a {
+  gap: var(--navigation-gap);
+  padding: var(--navigation-padding-y) var(--page-padding-x);
+  background: var(--bg-inverse);
   color: var(--text-inverse);
+  font-family: var(--font-syne);
+  font-size: var(--font-size-100);
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
 }
 
+.footer a {
+  text-decoration: underline;
+}
 
-/* ==========================================================================
-   6. LAYOUT CHANGES FOR SMALL SCREENS: Figma mode "<800"
-   "max-width: 799px" = only when the window is 799px wide or LESS.
-   Sizes and spacing already change through the variables above;
-   this part only changes how things are ARRANGED (like your mobile frame).
-   ========================================================================== */
-@media (max-width: 799px) {
-  /* Navigation: show the hamburger icon... */
-  .nav__toggle {
-    display: flex;
+/* =========================================================
+   Tablet (800–1279)
+   ========================================================= */
+@media (max-width: 1279px) {
+  .project__content {
+    flex: 0 0 360px;
   }
 
-  /* ...and hide the links, stacked vertically, until it's tapped */
-  .nav__links {
-    display: none;
-    width: 100%;
-    flex-direction: column;
+  .about__container {
     align-items: flex-start;
-    gap: var(--content-gap-sm);
-    padding-top: var(--content-gap-sm);
-  }
-
-  /* When the hidden checkbox is ticked (hamburger tapped), show the links.
-     ":checked" = ticked.  "~" = "a sibling that comes after it". */
-  .nav__toggle-input:checked ~ .nav__links {
-    display: flex;
-  }
-
-  /* Cards, About and Skills switch from columns to ONE column,
-     so things stack on top of each other */
-  .project-card__inner,
-  .about__inner,
-  .skills__list {
-    grid-template-columns: 1fr;
   }
 
   .about__image {
-    order: -1;                          /* move the photo above the text */
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+/* =========================================================
+   Mobile (<800)
+   ========================================================= */
+@media (max-width: 799px) {
+  .nav__links {
+    display: none;
   }
 
-  .skills__circle {
-    width: 120px;                       /* smaller circle, as in the mobile frame */
-    height: 120px;
+  .nav__menu {
+    display: block;
+  }
+
+  .project__container {
+    flex-direction: column;
+  }
+
+  .project__image,
+  .project__content {
+    flex: none;
+    width: 100%;
+  }
+
+  .about__container {
+    flex-direction: column-reverse;
+  }
+
+  .about__image {
+    flex: none;
+    width: 100%;
+  }
+
+  .skills__container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .skill {
+    max-width: none;
   }
 }

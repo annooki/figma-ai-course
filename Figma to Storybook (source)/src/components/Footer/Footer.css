@@ -1,0 +1,18 @@
+.footer {                         /* text/label/md + text/link/md-subtle */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--navigation-gap);
+  padding: var(--navigation-padding-y) var(--page-padding-x);
+  background: var(--bg-inverse);
+  color: var(--text-inverse);
+  font-family: var(--font-family-syne);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-medium);
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.footer a {
+  text-decoration: underline;
+}

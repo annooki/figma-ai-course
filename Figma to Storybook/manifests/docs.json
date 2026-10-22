@@ -1,0 +1,13 @@
+{
+  "v": 0,
+  "docs": {
+    "introduction--docs": {
+      "id": "introduction--docs",
+      "name": "Docs",
+      "path": "./src/Introduction.mdx",
+      "title": "Introduction",
+      "content": "import { Meta } from '@storybook/addon-docs/blocks';\n\n<Meta title=\"Introduction\" />\n\n# Portfolio design system\n\nReact components built from the Figma page **❖ Components**\n([My-project](https://www.figma.com/design/bHRn6PCs8dDNpgPaYAnZ0p/My-project?node-id=1-57)).\nEach component has the same properties and default content as in Figma. The real page content lives only in the app.\n\n## Sections\n\n- **Foundations**: colours, typography, spacing and radius. They're read straight from `src/tokens.css`, a 1:1 copy of the Figma variable collections and modes.\n- **Primitives**: Button, Link button, Icon, Logo.\n- **Layout**: Navigation, Footer.\n- **Sections**: Hero, Project card, About, Picture, Skill, Skills.\n\nEvery component has a **Docs** page with its props (the Figma properties) and all its stories.\n\n## Toolbar\n\n- **Theme**: Figma mode of `colour semantics` (light / dark).\n- **Frame**: Figma breakpoint mode (`>1280`, `>800`, `<800`) and frame width. Section stories set it themselves: Desktop 1280, Tablet 800, Mobile 375. The frame height hugs the content, like a Figma frame.\n\n## Using a component\n\n```tsx\nimport { DsRoot, ProjectCard } from './components';\n\n<DsRoot>                              {/* sets the breakpoint mode from the window width */}\n  <ProjectCard\n    headlineText=\"My project\"\n    contentText=\"What I did and why.\"\n    hasBg={false}\n  >\n    <img src={cover} alt=\"\" />         {/* image slot, 16:9 */}\n  </ProjectCard>\n</DsRoot>\n```\n\n## When Figma changes\n\n1. Variables: update `src/tokens.css` (same names as Figma, `/` → `-`). Foundations update by themselves.\n2. Text styles: update `src/typography.css`.\n3. Components: update the matching folder in `src/components/`. Props keep the Figma property names.\n",
+      "summary": "# Portfolio design system React components built from the Figma page **❖ Components** ([My..."
+    }
+  }
+}

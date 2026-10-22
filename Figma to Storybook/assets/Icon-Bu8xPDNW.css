@@ -1,0 +1,1 @@
+.icon{width:var(--icon-size);height:var(--icon-size);-webkit-mask:var(--icon-src) center / contain no-repeat;-webkit-mask:var(--icon-src) center / contain no-repeat;mask:var(--icon-src) center / contain no-repeat;background-color:currentColor;flex-shrink:0;display:inline-block}

@@ -1,0 +1,270 @@
+import{n as e}from"./rolldown-runtime-sJBDdmOt.js";var t;function n(){return(n=e((()=>{t=`/* =========================================================
+   Design tokens: a 1:1 copy of the Figma variable collections
+   (file "My-project"). Names are the Figma names with "/" → "-".
+   Semantic tokens alias primitives, just like in Figma.
+
+   Collections and modes:
+   - colour primitives, space primitives, radius primitives (default)
+   - text primitives  : >1280 · >800 · <800   → data-breakpoint="desktop|tablet|mobile"
+   - space semantics  : >1280 · >800 · <800   → data-breakpoint="desktop|tablet|mobile"
+   - colour semantics : light · dark          → prefers-color-scheme,
+                        or forced with <html data-theme="light|dark">
+   ========================================================= */
+
+/* ---------- colour primitives ---------- */
+:root {
+  --color-coral-50: #fdf1f0;
+  --color-coral-100: #fadddb;
+  --color-coral-200: #f5bdb9;
+  --color-coral-300: #ef9993;
+  --color-coral-400: #ea7f78;
+  --color-coral-500: #e56a64;
+  --color-coral-600: #c14f49;
+  --color-coral-700: #9c3d38;
+  --color-coral-800: #772e2a;
+  --color-coral-900: #521f1d;
+
+  --color-sand-50: #fcfaf9;
+  --color-sand-100: #f8f4f2;
+  --color-sand-200: #eee2d9;
+  --color-sand-300: #e0cdbf;
+  --color-sand-400: #cdb3a1;
+  --color-sand-500: #b59784;
+  --color-sand-600: #977a67;
+  --color-sand-700: #765f50;
+  --color-sand-800: #56453a;
+  --color-sand-900: #382d26;
+
+  --color-neutral-00: #ffffff;
+  --color-neutral-50: #f9f8f8;
+  --color-neutral-100: #f2f1f1;
+  --color-neutral-200: #e9e7e7;
+  --color-neutral-300: #d4d1d1;
+  --color-neutral-400: #a8a5a5;
+  --color-neutral-500: #8a8787;
+  --color-neutral-600: #666666;
+  --color-neutral-700: #393939;
+  --color-neutral-800: #2c2c2c;
+  --color-neutral-900: #252525;
+  --color-neutral-950: #161616;
+  --color-neutral-999: #000000;
+
+  /* ---------- space primitives ---------- */
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-64: 64px;
+
+  /* ---------- radius primitives ---------- */
+  --radius-4: 4px;
+  --radius-8: 8px;
+  --radius-12: 12px;
+  --radius-16: 16px;
+  --radius-24: 24px;
+  --radius-full: 999px;
+
+  /* ---------- text primitives (>1280) ---------- */
+  --font-family-monoton: "Monoton", cursive;
+  --font-family-syne: "Syne", sans-serif;
+  --font-family-poppins: "Poppins", sans-serif;
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  --font-size-100: 16px;
+  --font-size-200: 24px;
+  --font-size-300: 28px;
+  --font-size-400: 40px;
+  --font-size-500: 48px;
+  --font-size-700: 64px;
+
+  /* ---------- space semantics (>1280) ---------- */
+  --page-padding-x: var(--space-40);
+  --navigation-padding-y: var(--space-16);
+  --navigation-gap: var(--space-24);
+  --hero-padding-y: var(--space-64);
+  --section-padding: var(--space-40);
+  --section-gap: var(--space-64);
+  --content-gap-xl: var(--space-40);
+  --content-gap-lg: var(--space-32);
+  --content-gap-md: var(--space-24);
+  --content-gap-sm: var(--space-16);
+  --grid-gap: var(--space-32);
+  --button-padding-x: var(--space-24);
+  --button-padding-y: var(--space-16);
+  --button-gap: var(--space-8);
+  --button-tertiary-padding-x: var(--space-8);
+  --button-tertiary-padding-y: var(--space-4);
+}
+
+/* ---------- text primitives + space semantics: >800 ---------- */
+:is([data-breakpoint="tablet"], [data-breakpoint="mobile"]) {
+  --font-size-200: 20px;
+  --font-size-300: 24px;
+  --font-size-400: 32px;
+  --font-size-500: 40px;
+  --font-size-700: 48px;
+
+  --hero-padding-y: var(--space-48);
+  --section-padding: var(--space-32);
+  --section-gap: var(--space-32);
+  --content-gap-xl: var(--space-24);
+  --content-gap-lg: var(--space-24);
+  --content-gap-md: var(--space-16);
+  --grid-gap: var(--space-24);
+}
+
+/* ---------- text primitives + space semantics: <800 ---------- */
+[data-breakpoint="mobile"] {
+  --font-size-300: 20px;
+  --font-size-400: 24px;
+  --font-size-500: 32px;
+  --font-size-700: 40px;
+
+  --page-padding-x: var(--space-24);
+  --hero-padding-y: var(--space-40);
+  --section-padding: var(--space-24);
+  --section-gap: var(--space-24);
+}
+
+/* ---------- colour semantics: light ---------- */
+:root {
+  color-scheme: light;
+
+  --text-primary: var(--color-neutral-900);
+  --text-secondary: var(--color-neutral-700);
+  --text-inverse: var(--color-neutral-00);
+  --text-brand: var(--color-coral-600);
+  --text-link-hover: var(--color-coral-700);
+
+  --bg-page: var(--color-neutral-50);
+  --bg-surface: var(--color-neutral-00);
+  --bg-warm: var(--color-sand-100);
+  --bg-hero: var(--color-sand-200);
+  --bg-inverse: var(--color-neutral-950);
+
+  --border-default: var(--color-neutral-700);
+  --border-brand: var(--color-coral-500);
+  --border-focus: var(--color-coral-400);
+
+  --decoration-accent: var(--color-coral-500);
+  --icon-default: var(--color-neutral-900);
+
+  --action-primary-default: var(--color-coral-300);
+  --action-primary-hover: var(--color-coral-400);
+  --action-primary-pressed: var(--color-coral-500);
+  --action-primary-text: var(--color-neutral-950);
+  --action-primary-icon: var(--color-neutral-950);
+
+  --action-secondary-default: var(--color-neutral-700);
+  --action-secondary-hover: var(--color-coral-400);
+  --action-secondary-pressed: var(--color-neutral-700);
+  --action-secondary-bg: var(--color-neutral-50);
+  --action-secondary-text: var(--color-neutral-900);
+  --action-secondary-icon: var(--color-neutral-900);
+
+  --action-tertiary-default: var(--color-neutral-700);
+  --action-tertiary-hover: var(--color-coral-700);
+  --action-tertiary-pressed: var(--color-neutral-700);
+  --action-tertiary-underline: var(--color-coral-400);
+  --action-tertiary-icon: var(--color-neutral-700);
+  --action-tertiary-icon-hover: var(--color-coral-700);
+}
+
+/* ---------- colour semantics: dark ----------
+   Declared twice: once for the system setting (unless light is forced),
+   once for a forced dark theme. Keep both blocks identical. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --text-primary: var(--color-neutral-50);
+    --text-secondary: var(--color-neutral-300);
+    --text-inverse: var(--color-neutral-50);
+    --text-brand: var(--color-coral-400);
+    --text-link-hover: var(--color-coral-300);
+
+    --bg-page: var(--color-neutral-950);
+    --bg-surface: var(--color-neutral-900);
+    --bg-warm: var(--color-neutral-900);
+    --bg-hero: var(--color-neutral-800);
+    --bg-inverse: var(--color-neutral-800);
+
+    --border-default: var(--color-neutral-400);
+    --border-brand: var(--color-coral-400);
+    --border-focus: var(--color-coral-300);
+
+    --decoration-accent: var(--color-coral-700);
+    --icon-default: var(--color-neutral-50);
+
+    --action-primary-default: var(--color-coral-500);
+    --action-primary-hover: var(--color-coral-400);
+    --action-primary-pressed: var(--color-coral-600);
+    --action-primary-text: var(--color-neutral-950);
+    --action-primary-icon: var(--color-neutral-950);
+
+    --action-secondary-default: var(--color-neutral-400);
+    --action-secondary-hover: var(--color-coral-300);
+    --action-secondary-pressed: var(--color-neutral-400);
+    --action-secondary-bg: var(--color-neutral-950);
+    --action-secondary-text: var(--color-neutral-50);
+    --action-secondary-icon: var(--color-neutral-50);
+
+    --action-tertiary-default: var(--color-neutral-300);
+    --action-tertiary-hover: var(--color-coral-300);
+    --action-tertiary-pressed: var(--color-neutral-300);
+    --action-tertiary-underline: var(--color-coral-300);
+    --action-tertiary-icon: var(--color-neutral-200);
+    --action-tertiary-icon-hover: var(--color-coral-300);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --text-primary: var(--color-neutral-50);
+  --text-secondary: var(--color-neutral-300);
+  --text-inverse: var(--color-neutral-50);
+  --text-brand: var(--color-coral-400);
+  --text-link-hover: var(--color-coral-300);
+
+  --bg-page: var(--color-neutral-950);
+  --bg-surface: var(--color-neutral-900);
+  --bg-warm: var(--color-neutral-900);
+  --bg-hero: var(--color-neutral-800);
+  --bg-inverse: var(--color-neutral-800);
+
+  --border-default: var(--color-neutral-400);
+  --border-brand: var(--color-coral-400);
+  --border-focus: var(--color-coral-300);
+
+  --decoration-accent: var(--color-coral-700);
+  --icon-default: var(--color-neutral-50);
+
+  --action-primary-default: var(--color-coral-500);
+  --action-primary-hover: var(--color-coral-400);
+  --action-primary-pressed: var(--color-coral-600);
+  --action-primary-text: var(--color-neutral-950);
+  --action-primary-icon: var(--color-neutral-950);
+
+  --action-secondary-default: var(--color-neutral-400);
+  --action-secondary-hover: var(--color-coral-300);
+  --action-secondary-pressed: var(--color-neutral-400);
+  --action-secondary-bg: var(--color-neutral-950);
+  --action-secondary-text: var(--color-neutral-50);
+  --action-secondary-icon: var(--color-neutral-50);
+
+  --action-tertiary-default: var(--color-neutral-300);
+  --action-tertiary-hover: var(--color-coral-300);
+  --action-tertiary-pressed: var(--color-neutral-300);
+  --action-tertiary-underline: var(--color-coral-300);
+  --action-tertiary-icon: var(--color-neutral-200);
+  --action-tertiary-icon-hover: var(--color-coral-300);
+}
+`})))()}function r(e){let n=t.indexOf(e);if(n===-1)return``;let r=t.indexOf(`{`,n);return t.slice(r+1,t.indexOf(`}`,r))}function i(e){let t={};for(let[,n,r]of e.matchAll(/(--[\w-]+):\s*([^;]+);/g))t[n]=r.trim();return t}var a,o,s,c,l,u,d,f,p,m,h,g,_,v,y;function b(){return(b=e((()=>{n(),a=i(r(`:root {`)),o=i(r(`:is([data-breakpoint="tablet"], [data-breakpoint="mobile"]) {`)),s=i(r(`[data-breakpoint="mobile"] {`)),c=i(r(`/* ---------- colour semantics: light`)),l=i(r(`:root[data-theme="dark"] {`)),u={desktop:a,tablet:{...a,...o},mobile:{...a,...o,...s}},d=[`font-size`,`font-family`,`font-weight`,`link-hover`,`icon-hover`,`padding-x`,`padding-y`,`gap-xl`,`gap-lg`,`gap-md`,`gap-sm`],f=e=>d.reduce((e,t)=>e.replaceAll(t.replace(`-`,`/`),t),e.replace(/^--/,``).replace(/-/g,`/`)),p=e=>e.match(/var\((--[\w-]+)\)/)?.[1],m=Object.entries(a).filter(([e])=>e.startsWith(`--color-`)).map(([e,t])=>({name:e,value:t,family:e.replace(`--color-`,``).split(`-`)[0]})),h=Object.keys(c).filter(e=>e.startsWith(`--`)).map(e=>({name:e,light:p(c[e]),dark:p(l[e])})),g=e=>a[e],_=Object.entries(a).filter(([e])=>e.startsWith(`--space-`)),v=Object.entries(a).filter(([e])=>e.startsWith(`--radius-`)),y=Object.keys(a).filter(e=>a[e].startsWith(`var(--space-`)),Object.keys(a).filter(e=>e.startsWith(`--font-size-`))})))()}function x(){return(x=e((()=>{})))()}export{b as a,v as c,y as d,g as i,h as l,p as n,u as o,f as r,m as s,x as t,_ as u};

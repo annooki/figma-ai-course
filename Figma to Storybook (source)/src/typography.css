@@ -1,0 +1,74 @@
+/* =========================================================
+   Text styles: a 1:1 copy of the Figma text styles.
+   Sizes, families and weights are the Figma variables they
+   are bound to, so they follow the breakpoint mode.
+   ========================================================= */
+.text-display-md {                /* text/display/md */
+  font-family: var(--font-family-monoton);
+  font-size: var(--font-size-700);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.text-headline-lg {               /* text/headline/lg */
+  font-family: var(--font-family-syne);
+  font-size: var(--font-size-500);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+}
+
+.text-headline-md {               /* text/headline/md */
+  font-family: var(--font-family-syne);
+  font-size: var(--font-size-400);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.text-headline-sm {               /* text/headline/sm */
+  font-family: var(--font-family-syne);
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+}
+
+.text-subtitle-md {               /* text/subtitle/md */
+  font-family: var(--font-family-syne);
+  font-size: var(--font-size-300);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+}
+
+.text-body-md {                   /* text/body/md */
+  font-family: var(--font-family-poppins);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.7;
+  letter-spacing: -0.005em;
+}
+
+.text-button-md,                  /* text/button/md */
+.text-label-md,                   /* text/label/md */
+.text-link-md-subtle {            /* text/link/md-subtle */
+  font-family: var(--font-family-syne);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-medium);
+  line-height: 20px;
+}
+
+.text-link-md {                   /* text/link/md */
+  font-family: var(--font-family-syne);
+  font-size: var(--font-size-100);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.7;
+  letter-spacing: -0.02em;
+}
+
+.text-link-md-subtle {
+  text-decoration: underline;
+}

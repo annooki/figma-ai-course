@@ -1,0 +1,1 @@
+.skill{gap:var(--content-gap-sm);max-width:var(--skill-max);flex-direction:column;display:flex;position:relative}.skill__title{font-family:var(--font-family-syne);font-size:var(--font-size-200);font-weight:var(--font-weight-bold);letter-spacing:-.005em;color:var(--text-primary);line-height:1.45}[data-breakpoint=mobile] .skill{max-width:none}

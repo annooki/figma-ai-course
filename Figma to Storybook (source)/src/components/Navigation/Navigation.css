@@ -1,0 +1,31 @@
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--navigation-height);
+  padding: var(--navigation-padding-y) var(--page-padding-x);
+  background: var(--bg-surface);
+}
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: var(--navigation-gap);
+}
+
+.nav__menu {
+  display: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--icon-default);
+  cursor: pointer;
+}
+
+[data-breakpoint="mobile"] .nav__links {
+  display: none;
+}
+
+[data-breakpoint="mobile"] .nav__menu {
+  display: flex;
+}

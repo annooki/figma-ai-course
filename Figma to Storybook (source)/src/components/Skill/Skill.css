@@ -1,0 +1,20 @@
+.skill {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--content-gap-sm);
+  max-width: var(--skill-max);
+}
+
+.skill__title {                   /* text/headline/sm */
+  font-family: var(--font-family-syne);
+  font-size: var(--font-size-200);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  color: var(--text-primary);
+}
+
+[data-breakpoint="mobile"] .skill {
+  max-width: none;
+}

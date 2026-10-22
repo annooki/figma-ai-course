@@ -1,0 +1,15 @@
+/* Storybook canvas: a neutral background like the Figma canvas,
+   so the frame edges (and their hug height) are visible */
+body.sb-show-main {
+  background: #e5e5e5;
+}
+
+:root[data-theme="dark"] body.sb-show-main {
+  background: #1e1e1e;
+}
+
+.sb-frame {
+  width: max-content;
+  max-width: none;
+  background: var(--bg-page);
+}

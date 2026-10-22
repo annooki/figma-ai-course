@@ -1,0 +1,94 @@
+.fd {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 8px;
+  color: var(--text-primary);
+  font-family: var(--font-family-poppins);
+  font-size: 14px;
+}
+
+.fd h2 {
+  margin: 0 0 16px;
+  font-family: var(--font-family-syne);
+  font-size: 24px;
+}
+
+.fd p.fd__note {
+  margin: -8px 0 16px;
+  color: var(--text-secondary);
+}
+
+.fd code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+}
+
+.fd__muted {
+  color: var(--text-secondary);
+}
+
+/* Colour swatches */
+.fd__swatches {
+  display: grid;
+  grid-template-columns: repeat(10, 96px);
+  gap: 8px;
+}
+
+.fd__swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fd__chip {
+  height: 56px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.08);
+}
+
+/* Tables */
+.fd table {
+  border-collapse: collapse;
+  width: max-content;
+}
+
+.fd th,
+.fd td {
+  padding: 8px 16px 8px 0;
+  border-bottom: 1px solid var(--color-neutral-200);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.fd th {
+  font-family: var(--font-family-syne);
+  font-weight: var(--font-weight-medium);
+  color: var(--text-secondary);
+}
+
+.fd__mode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fd__dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.12);
+}
+
+.fd__bar {
+  height: 16px;
+  background: var(--color-coral-300);
+  border-radius: 2px;
+}
+
+.fd__radius {
+  width: 64px;
+  height: 64px;
+  background: var(--color-sand-200);
+  border: 2px solid var(--color-coral-500);
+}

@@ -1,0 +1,3490 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Components Manifest</title>
+  <style>
+      :root {
+          --bg: #0b0c10;
+          --panel: #121318;
+          --muted: #9aa0a6;
+          --fg: #e8eaed;
+          --ok: #22c55e;
+          --info: #1e88e5;
+          --err: #c62828;
+          --ok-bg: #0c1a13;
+          --info-bg: #0c1624;
+          --err-bg: #1a0e0e;
+          --chip: #1f2330;
+          --border: #2b2f3a;
+          --link: #8ab4f8;
+          --active-ring: 1px; /* 1px active ring for pills and toggles */
+      }
+
+      * {
+          box-sizing: border-box;
+      }
+
+      html,
+      body {
+          margin: 0;
+          background: var(--bg);
+          color: var(--fg);
+          font: 14px/1.5 system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          Ubuntu,
+          Cantarell,
+          'Helvetica Neue',
+          Arial,
+          'Noto Sans';
+      }
+
+      .wrap {
+          max-width: 1100px;
+          margin: 0 auto;
+          padding: 16px 20px;
+      }
+
+      header {
+          position: sticky;
+          top: 0;
+          backdrop-filter: blur(6px);
+          background: color-mix(in srgb, var(--bg) 84%, transparent);
+          border-bottom: 1px solid var(--border);
+          z-index: 10;
+      }
+
+      h1 {
+          font-size: 20px;
+          margin: 0 0 6px;
+      }
+
+      .summary {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          align-items: center;
+      }
+
+      /* Top filter pills */
+      .filter-pill {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 6px 12px;
+          border: 1px solid var(--border);
+          border-radius: 999px;
+          background: var(--panel);
+          text-decoration: none;
+          cursor: pointer;
+          user-select: none;
+          color: var(--fg);
+      }
+
+      .filter-pill.ok {
+          color: #b9f6ca;
+          border-color: color-mix(in srgb, var(--ok) 55%, var(--border));
+          background: color-mix(in srgb, var(--ok) 18%, #000);
+      }
+
+      .filter-pill.info {
+          color: #b3d9ff;
+          border-color: color-mix(in srgb, var(--info) 55%, var(--border));
+          background: var(--info-bg);
+      }
+
+      .filter-pill.err {
+          color: #ff9aa0;
+          border-color: color-mix(in srgb, var(--err) 55%, var(--border));
+          background: var(--err-bg);
+      }
+
+      .filter-pill.all {
+          color: #d7dbe0;
+          border-color: var(--border);
+          background: var(--panel);
+      }
+
+      .filter-pill[aria-disabled='true'] {
+          cursor: default;
+          text-decoration: none;
+      }
+
+      .filter-pill:focus,
+      .filter-pill:active {
+          outline: none;
+          box-shadow: none;
+      }
+
+      /* Selected top pill ring via :target */
+      #filter-all:target ~ header .filter-pill[data-k='all'],
+      #filter-errors:target ~ header .filter-pill[data-k='errors'],
+      #filter-infos:target ~ header .filter-pill[data-k='infos'],
+      #filter-story-errors:target ~ header .filter-pill[data-k='story-errors'],
+      #filter-story-warnings:target ~ header .filter-pill[data-k='story-warnings'],
+      #filter-no-api:target ~ header .filter-pill[data-k='no-api'],
+      #filter-doc-errors:target ~ header .filter-pill[data-k='docs'],
+      #filter-docs:target ~ header .filter-pill[data-k='docs'] {
+          box-shadow: 0 0 0 var(--active-ring) currentColor;
+          border-color: currentColor;
+      }
+
+      /* Hidden targets for filtering */
+      #filter-all,
+      #filter-errors,
+      #filter-infos,
+      #filter-story-errors,
+      #filter-story-warnings,
+      #filter-no-api,
+      #filter-doc-errors,
+      #filter-docs {
+          display: none;
+      }
+
+      main {
+          padding: 36px 0 40px;
+      }
+
+      .grid {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 18px;
+      }
+
+      /* one card per row */
+
+      .card {
+          border: 1px solid var(--border);
+          background: var(--panel);
+          border-radius: 14px;
+          padding: 14px;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          /* Keep a deep-linked card clear of the sticky header when scrolled into view */
+          scroll-margin-top: 110px;
+      }
+
+      /* Highlight the card deep-linked via components.html#<manifest-id> */
+      .card:target {
+          box-shadow: 0 0 0 2px var(--info);
+          border-color: var(--info);
+      }
+
+      .head {
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+      }
+
+      .title {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          gap: 10px;
+      }
+
+      .title h2 {
+          font-size: 16px;
+          margin: 0;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+      }
+
+      .meta {
+          font-size: 12px;
+          color: var(--muted);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+      }
+
+      .kv {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+      }
+
+      .chip {
+          font-size: 12px;
+          padding: 4px 8px;
+          border-radius: 999px;
+          background: var(--chip);
+          border: 1px solid var(--border);
+      }
+
+      .hint {
+          color: var(--muted);
+          font-size: 12px;
+      }
+
+      .badges {
+          display: flex;
+          gap: 8px;
+          flex-wrap: wrap;
+      }
+
+      /* Per-card badges: labels become toggles when clickable */
+      .badge {
+          font-size: 12px;
+          padding: 3px 8px;
+          border-radius: 999px;
+          border: 1px solid var(--border);
+          background: var(--chip);
+          color: #d7dbe0;
+      }
+
+      .badge.ok {
+          color: #b9f6ca;
+          border-color: color-mix(in srgb, var(--ok) 55%, var(--border));
+      }
+
+      .badge.info {
+          color: #b3d9ff;
+          border-color: color-mix(in srgb, var(--info) 55%, var(--border));
+      }
+
+      .badge.err {
+          color: #ff9aa0;
+          border-color: color-mix(in srgb, var(--err) 55%, var(--border));
+      }
+
+      .snippet-warning {
+          margin-top: 8px;
+          padding: 8px 10px;
+          border-radius: 8px;
+          border: 1px solid color-mix(in srgb, var(--info) 45%, var(--border));
+          background: var(--info-bg);
+          color: #b3d9ff;
+          font-size: 12px;
+      }
+
+      .as-toggle {
+          cursor: pointer;
+      }
+
+      /* 1px ring on active toggle */
+      .tg-err:checked + label.as-toggle,
+      .tg-info:checked + label.as-toggle,
+      .tg-stories:checked + label.as-toggle,
+      .tg-docs:checked + label.as-toggle,
+      .tg-subcomponents:checked + label.as-toggle,
+      .tg-content:checked + label.as-toggle,
+      .tg-props:checked + label.as-toggle {
+          box-shadow: 0 0 0 var(--active-ring) currentColor;
+          border-color: currentColor;
+      }
+
+      /* Panels: hidden by default, shown when respective toggle checked */
+      .panels {
+          display: grid;
+          gap: 10px;
+      }
+
+      .panel {
+          display: none;
+      }
+
+      .tg-err:checked ~ .panels .panel-err {
+          display: grid;
+      }
+
+      .tg-info:checked ~ .panels .panel-info {
+          display: grid;
+          gap: 8px;
+      }
+
+      .tg-stories:checked ~ .panels .panel-stories {
+          display: grid;
+          gap: 8px;
+      }
+
+      .tg-docs:checked ~ .panels .panel-docs {
+          display: grid;
+          gap: 8px;
+      }
+
+      .tg-subcomponents:checked ~ .panels .panel-subcomponents {
+          display: grid;
+          gap: 8px;
+      }
+
+      .tg-content:checked ~ .panels .panel-content {
+          display: grid;
+          gap: 8px;
+      }
+
+      .tg-props:checked ~ .panels .panel-props {
+          display: grid;
+      }
+
+      /* Colored notes for API error + info */
+      .note {
+          padding: 12px;
+          border: 1px solid var(--border);
+          border-radius: 10px;
+      }
+
+      .note.err {
+          border-color: color-mix(in srgb, var(--err) 55%, var(--border));
+          background: var(--err-bg);
+          color: #ffd1d4;
+      }
+
+      .note.info {
+          border-color: color-mix(in srgb, var(--info) 55%, var(--border));
+          background: var(--info-bg);
+          color: #d6e8ff;
+      }
+
+      .note.ok {
+          border-color: color-mix(in srgb, var(--ok) 55%, var(--border));
+          background: var(--ok-bg);
+          color: var(--fg);
+      }
+
+      .note-title {
+          font-weight: 600;
+          margin-bottom: 6px;
+      }
+
+      .note-body {
+          white-space: normal;
+      }
+
+      /* Story error cards */
+      .ex {
+          padding: 10px;
+          border: 1px solid var(--border);
+          border-radius: 10px;
+          background: #0f131b;
+      }
+
+      .ex.err {
+          border-color: color-mix(in srgb, var(--err) 55%, var(--border));
+      }
+
+      .row {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          flex-wrap: wrap;
+      }
+
+      .status-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          display: inline-block;
+      }
+
+      .dot-ok {
+          background: var(--ok);
+      }
+
+      .dot-err {
+          background: var(--err);
+      }
+
+      .ex-name {
+          font-weight: 600;
+      }
+
+      /* Error groups (visible in errors filter) */
+      .error-groups {
+          display: none;
+          margin-bottom: 16px;
+      }
+
+      .group {
+          border: 1px solid var(--border);
+          background: var(--panel);
+          border-radius: 14px;
+          overflow: hidden;
+      }
+
+      .group + .group {
+          margin-top: 12px;
+      }
+
+      .group-header {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 12px 14px;
+          cursor: pointer;
+          border-bottom: 1px solid var(--border);
+      }
+
+      .group-header:hover {
+          background: #141722;
+      }
+
+      .group-title {
+          font-weight: 600;
+          flex: 1;
+      }
+
+      .group-count {
+          font-size: 12px;
+          color: var(--muted);
+      }
+
+      .group-cards {
+          display: none;
+          padding: 12px;
+      }
+
+      .group .card {
+          margin: 12px 0;
+      }
+
+      .group .card:first-child {
+          margin-top: 0;
+      }
+
+      .group .card:last-child {
+          margin-bottom: 0;
+      }
+
+      /* caret rotation */
+      .group-tg:checked + label .caret {
+          transform: rotate(90deg);
+      }
+
+      .caret {
+          transition: transform 0.15s ease;
+      }
+
+      /* toggle body */
+      .group-tg:checked ~ .group-cards {
+          display: block;
+      }
+
+      /* CSS-only filtering of cards via top pills */
+      #filter-errors:target ~ main .card:not(.has-error):not(.has-story-error) {
+          display: none;
+      }
+
+      #filter-infos:target ~ main .card:not(.has-info) {
+          display: none;
+      }
+
+      #filter-story-errors:target ~ main .card:not(.has-story-error) {
+          display: none;
+      }
+
+      #filter-story-warnings:target ~ main .card:not(.has-story-warning) {
+          display: none;
+      }
+
+      #filter-no-api:target ~ main .card:not(.missing-api) {
+          display: none;
+      }
+
+      #filter-doc-errors:target ~ main .card:not(.has-doc-error) {
+          display: none;
+      }
+
+      #filter-docs:target ~ main .card:has(> .tg-docs),
+      #filter-docs:target ~ main .card.is-doc {
+          display: block;
+      }
+
+      #filter-docs:target ~ main .card:not(:has(> .tg-docs)):not(.is-doc) {
+          display: none;
+      }
+
+      #filter-all:target ~ main .card {
+          display: block;
+      }
+
+      /* In errors view, hide standalone component-error cards in the regular grid (they will appear in groups) */
+      #filter-errors:target ~ main .grid .card.has-error {
+          display: none;
+      }
+
+      /* Show grouped section only in errors view */
+      #filter-errors:target ~ main .error-groups {
+          display: block;
+      }
+
+      /* Section titles */
+      .section-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: var(--muted);
+          margin: 24px 0 12px;
+          padding-bottom: 8px;
+          border-bottom: 1px solid var(--border);
+      }
+      .section-title:first-child {
+          margin-top: 0;
+      }
+
+      /* When a toggle is checked, show the corresponding panel */
+      .card > .tg-err:checked ~ .panels .panel-err {
+          display: grid;
+      }
+      
+      .card > .tg-info:checked ~ .panels .panel-info {
+          display: grid;
+      }
+      
+      .card > .tg-stories:checked ~ .panels .panel-stories {
+          display: grid;
+      }
+
+      .card > .tg-docs:checked ~ .panels .panel-docs {
+          display: grid;
+      }
+
+      .card > .tg-subcomponents:checked ~ .panels .panel-subcomponents {
+          display: grid;
+      }
+
+      .card > .tg-content:checked ~ .panels .panel-content {
+          display: grid;
+      }
+
+      /* Add vertical spacing around panels only when any panel is visible */
+      .card > .tg-err:checked ~ .panels,
+      .card > .tg-info:checked ~ .panels,
+      .card > .tg-stories:checked ~ .panels,
+      .card > .tg-docs:checked ~ .panels,
+      .card > .tg-subcomponents:checked ~ .panels,
+      .card > .tg-content:checked ~ .panels,
+      .card > .tg-props:checked ~ .panels {
+          margin: 10px 0;
+      }
+
+      /* Optional: a subtle 1px ring on the active badge, using :has() if available */
+      @supports selector(.card:has(.tg-err:checked)) {
+          .card:has(.tg-err:checked) label[for$='-err'],
+          .card:has(.tg-info:checked) label[for$='-info'],
+          .card:has(.tg-stories:checked) label[for$='-stories'],
+          .card:has(.tg-docs:checked) label[for$='-docs'],
+          .card:has(.tg-subcomponents:checked) label[for$='-subcomponents'],
+          .card:has(.tg-content:checked) label[for$='-content'],
+          .card:has(.tg-props:checked) label[for$='-props'] {
+              box-shadow: 0 0 0 1px currentColor;
+              border-color: currentColor;
+          }
+      }
+
+      /* Wrap long lines in code blocks at ~120 characters */
+      pre, code {
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      }
+      pre {
+          white-space: pre-wrap;
+          overflow-wrap: anywhere;
+          word-break: break-word;
+          overflow-x: auto; /* fallback for extremely long tokens */
+          margin: 8px 0 0;
+      }
+      pre > code {
+          display: block;
+          white-space: inherit;
+          overflow-wrap: inherit;
+          word-break: inherit;
+          inline-size: min(100%, 120ch);
+      }
+
+      /* MDX content container for docs */
+      .mdx-content {
+          background: #0f131b;
+          border: 1px solid var(--border);
+          border-radius: 10px;
+          padding: 12px;
+          max-height: 400px;
+          overflow-y: auto;
+          margin-top: 8px;
+      }
+  </style>
+</head>
+<body>
+<!-- Hidden targets for the top-level filters -->
+<span id="filter-all"></span>
+<span id="filter-errors"></span>
+<span id="filter-infos"></span>
+<span id="filter-story-errors"></span>
+<span id="filter-story-warnings"></span>
+<span id="filter-no-api"></span>
+<span id="filter-doc-errors"></span>
+<span id="filter-docs"></span>
+<header>
+  <div class="wrap">
+    <h1>Manifest Debugger</h1>
+    <div class="summary"><a class="filter-pill all" data-k="all" href="#filter-all">All</a><a class="filter-pill err" data-k="errors" href="#filter-errors">3/15 API errors</a><a class="filter-pill info" data-k="infos" href="#filter-infos">3/15 infos</a><span class="filter-pill ok" aria-disabled="true">38 stories ok</span><a class="filter-pill ok" data-k="docs" href="#filter-docs">1 doc ok</a></div>
+  </div>
+</header>
+<main>
+  <div class="wrap">
+    <div class="note ok" style="margin-bottom: 16px;">
+              Using <code>react-docgen-typescript</code>. Generation took <strong>1.2s</strong>.
+            </div>
+    <h2 class="section-title">Components</h2>
+    <div class="grid" role="list">
+      
+<article
+  id="sections-about"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="About">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> About</h2>
+      <div class="badges">
+        <label for="c-0-sections-about-props" class="badge ok as-toggle">5 prop types</label>
+        
+        <label for="c-0-sections-about-stories" class="badge ok as-toggle">3 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/components/About/About.stories.tsx">sections-about · ./src/components/About/About.stories.tsx</div>
+    
+    <div class="hint">Figma &quot;Section/About&quot; (desktop, tablet, mobile). On mobile the image goes on top.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-0-sections-about-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-0-sections-about-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">5 prop types</span>
+            </div>
+            <pre><code>Component: src/components/About/About.tsx::About</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Square image slot. Defaults to the Figma placeholder.
+ */
+children?: ReactNode
+
+contactHref?: string = #
+
+/**
+ * Body text. A blank line starts a new paragraph.
+ */
+contentText?: string = Welcome to my portfolio! I&#39;m Kim, a passionate graphic UI designer dedicated to crafting visual experiences that resonate with users. My goal is to design interfaces that not only grab attention but also facilitate smooth navigation.  I carefully select colour palettes that evoke the right emotions and typography that enhances clarity. I believe that intuitive design is key to guiding users effortlessly on their journey.
+
+headlineText?: string = Headline
+
+id?: string</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { About } from 'design-system';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Desktop</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Desktop = () =&gt; &lt;About /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Tablet</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Tablet = () =&gt; &lt;About /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Mobile</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Mobile = () =&gt; &lt;About /&gt;;</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="primitives-button"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Button">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Button</h2>
+      <div class="badges">
+        <label for="c-1-primitives-button-props" class="badge ok as-toggle">7 prop types</label>
+        
+        <label for="c-1-primitives-button-stories" class="badge ok as-toggle">4 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/components/Button/Button.stories.tsx">primitives-button · ./src/components/Button/Button.stories.tsx</div>
+    
+    <div class="hint">Figma &quot;Button&quot;: primary, secondary and tertiary, with hover, active and focus states.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-1-primitives-button-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-1-primitives-button-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">7 prop types</span>
+            </div>
+            <pre><code>Component: src/components/Button/Button.tsx::Button</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>className?: string
+
+showLeftIcon?: boolean = true
+
+showRightIcon?: boolean = true
+
+/**
+ * Forces a visual state (for docs). Real hover/press/focus work without it.
+ */
+state?: ButtonState
+
+/**
+ * Figma: &quot;Swap icon&quot;
+ */
+swapIcon?: &quot;chevrons-right&quot; | &quot;arrow-right-long&quot; | &quot;xmark-large&quot; | &quot;bars&quot; = chevrons-right
+
+text?: string = Label
+
+variant?: ButtonVariant = primary</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Button } from 'design-system';
+import { Fragment } from 'react';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Primary</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Primary = () =&gt; &lt;Button /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Secondary</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Secondary = () =&gt; &lt;Button variant=&quot;secondary&quot; /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Tertiary</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Tertiary = () =&gt; &lt;Button variant=&quot;tertiary&quot; /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Variants</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Every variant and state, laid out like the Figma component set.</div>
+              <pre><code>const AllVariants = () =&gt; (
+  &lt;div style={{ display: &#39;grid&#39;, gridTemplateColumns: &#39;auto repeat(3, auto)&#39;, gap: 24, alignItems: &#39;center&#39; }}&gt;
+    &lt;span /&gt;
+    {variants.map((v) =&gt; (
+      &lt;strong key={v} style={{ fontFamily: &#39;var(--font-family-syne)&#39;, color: &#39;var(--text-primary)&#39; }}&gt;{v}&lt;/strong&gt;
+    ))}
+    {states.map((s) =&gt; (
+      &lt;Fragment key={s}&gt;
+        &lt;span style={{ fontFamily: &#39;var(--font-family-syne)&#39;, color: &#39;var(--text-secondary)&#39; }}&gt;{s}&lt;/span&gt;
+        {variants.map((v) =&gt; (
+          &lt;Button key={v + s} variant={v} state={s} /&gt;
+        ))}
+      &lt;/Fragment&gt;
+    ))}
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="foundations-colours"
+  class="card 
+  has-error
+  has-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Colours">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-err"></span> Colours</h2>
+      <div class="badges">
+        <label for="c-2-foundations-colours-err" class="badge err as-toggle">API error</label>
+        <label for="c-2-foundations-colours-info" class="badge info as-toggle">2 infos</label>
+        <label for="c-2-foundations-colours-stories" class="badge ok as-toggle">2 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/foundations/Colors.stories.tsx">foundations-colours · ./src/foundations/Colors.stories.tsx</div>
+    
+    
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  <input id="c-2-foundations-colours-err" class="tg tg-err" type="checkbox" hidden />
+  <input id="c-2-foundations-colours-info" class="tg tg-info" type="checkbox" hidden />
+  <input id="c-2-foundations-colours-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  
+
+  <div class="panels">
+    
+        <div class="panel panel-err">
+          
+    <div class="note err">
+      <div class="note-title">API error</div>
+      <div class="note-body"><pre><code>We could not detect the component from your story file. Specify meta.component.
+  3 | import &#39;./Foundations.css&#39;;
+  4 |
+&gt; 5 | const meta = {
+    | ^
+  6 |   title: &#39;Foundations/Colours&#39;,
+  7 |   tags: [&#39;!autodocs&#39;],
+  8 |   parameters: { controls: { disable: true } },
+
+./src/foundations/Colors.stories.tsx:
+import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
+import { figmaName, hexOf, primitiveColors, semanticColors } from &#39;./tokens&#39;;
+import &#39;./Foundations.css&#39;;
+
+const meta = {
+  title: &#39;Foundations/Colours&#39;,
+  tags: [&#39;!autodocs&#39;],
+  parameters: { controls: { disable: true } },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj&lt;typeof meta&gt;;
+
+/** Figma collection &quot;colour primitives&quot; */
+export const Primitives: Story = {
+  render: () =&gt; (
+    &lt;div className=&quot;fd&quot;&gt;
+      {[&#39;coral&#39;, &#39;sand&#39;, &#39;neutral&#39;].map((family) =&gt; (
+        &lt;section key={family}&gt;
+          &lt;h2&gt;{family}&lt;/h2&gt;
+          &lt;div className=&quot;fd__swatches&quot;&gt;
+            {primitiveColors
+              .filter((c) =&gt; c.family === family)
+              .map((c) =&gt; (
+                &lt;div className=&quot;fd__swatch&quot; key={c.name}&gt;
+                  &lt;div className=&quot;fd__chip&quot; style={{ background: `var(${c.name})` }} /&gt;
+                  &lt;code&gt;{figmaName(c.name).replace(&#39;color/&#39;, &#39;&#39;)}&lt;/code&gt;
+                  &lt;span className=&quot;fd__muted&quot;&gt;{c.value}&lt;/span&gt;
+                &lt;/div&gt;
+              ))}
+          &lt;/div&gt;
+        &lt;/section&gt;
+      ))}
+    &lt;/div&gt;
+  ),
+};
+
+const Mode = ({ alias }: { alias: string }) =&gt; (
+  &lt;span className=&quot;fd__mode&quot;&gt;
+    &lt;span className=&quot;fd__dot&quot; style={{ background: `var(${alias})` }} /&gt;
+    &lt;span&gt;
+      &lt;code&gt;{figmaName(alias)}&lt;/code&gt;
+      &lt;br /&gt;
+      &lt;span className=&quot;fd__muted&quot;&gt;{hexOf(alias)}&lt;/span&gt;
+    &lt;/span&gt;
+  &lt;/span&gt;
+);
+
+/** Figma collection &quot;colour semantics&quot;, modes light and dark. Use these in components. */
+export const Semantics: Story = {
+  render: () =&gt; (
+    &lt;div className=&quot;fd&quot;&gt;
+      &lt;section&gt;
+        &lt;h2&gt;colour semantics&lt;/h2&gt;
+        &lt;p className=&quot;fd__note&quot;&gt;Each token points to a primitive, per mode. The Theme toolbar switches the mode for the components.&lt;/p&gt;
+        &lt;table&gt;
+          &lt;thead&gt;
+            &lt;tr&gt;
+              &lt;th&gt;Token&lt;/th&gt;
+              &lt;th&gt;CSS variable&lt;/th&gt;
+              &lt;th&gt;light&lt;/th&gt;
+              &lt;th&gt;dark&lt;/th&gt;
+            &lt;/tr&gt;
+          &lt;/thead&gt;
+          &lt;tbody&gt;
+            {semanticColors.map((c) =&gt; (
+              &lt;tr key={c.name}&gt;
+                &lt;td&gt;
+                  &lt;code&gt;{figmaName(c.name)}&lt;/code&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;code className=&quot;fd__muted&quot;&gt;{c.name}&lt;/code&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;Mode alias={c.light} /&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;Mode alias={c.dark} /&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            ))}
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  ),
+};
+</code></pre></div>
+    </div>
+        </div>
+    
+        <div class="panel panel-info">
+          
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">No description found. Write a jsdoc comment such as /** Component description */.</div>
+    </div>
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">Specify an @import jsdoc tag on your component or your stories meta such as @import import { Colours } from &#39;my-design-system&#39;;</div>
+    </div>
+        </div>
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Primitives</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Figma collection &quot;colour primitives&quot;</div>
+              <pre><code>const Primitives = () =&gt; (
+  &lt;div className=&quot;fd&quot;&gt;
+    {[&#39;coral&#39;, &#39;sand&#39;, &#39;neutral&#39;].map((family) =&gt; (
+      &lt;section key={family}&gt;
+        &lt;h2&gt;{family}&lt;/h2&gt;
+        &lt;div className=&quot;fd__swatches&quot;&gt;
+          {primitiveColors
+            .filter((c) =&gt; c.family === family)
+            .map((c) =&gt; (
+              &lt;div className=&quot;fd__swatch&quot; key={c.name}&gt;
+                &lt;div className=&quot;fd__chip&quot; style={{ background: `var(${c.name})` }} /&gt;
+                &lt;code&gt;{figmaName(c.name).replace(&#39;color/&#39;, &#39;&#39;)}&lt;/code&gt;
+                &lt;span className=&quot;fd__muted&quot;&gt;{c.value}&lt;/span&gt;
+              &lt;/div&gt;
+            ))}
+        &lt;/div&gt;
+      &lt;/section&gt;
+    ))}
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Semantics</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Figma collection &quot;colour semantics&quot;, modes light and dark. Use these in components.</div>
+              <pre><code>const Semantics = () =&gt; (
+  &lt;div className=&quot;fd&quot;&gt;
+    &lt;section&gt;
+      &lt;h2&gt;colour semantics&lt;/h2&gt;
+      &lt;p className=&quot;fd__note&quot;&gt;Each token points to a primitive, per mode. The Theme toolbar switches the mode for the components.&lt;/p&gt;
+      &lt;table&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;
+            &lt;th&gt;Token&lt;/th&gt;
+            &lt;th&gt;CSS variable&lt;/th&gt;
+            &lt;th&gt;light&lt;/th&gt;
+            &lt;th&gt;dark&lt;/th&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          {semanticColors.map((c) =&gt; (
+            &lt;tr key={c.name}&gt;
+              &lt;td&gt;
+                &lt;code&gt;{figmaName(c.name)}&lt;/code&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;code className=&quot;fd__muted&quot;&gt;{c.name}&lt;/code&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;Mode alias={c.light} /&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;Mode alias={c.dark} /&gt;
+              &lt;/td&gt;
+            &lt;/tr&gt;
+          ))}
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="layout-footer"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Footer">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Footer</h2>
+      <div class="badges">
+        <label for="c-3-layout-footer-props" class="badge ok as-toggle">3 prop types</label>
+        
+        <label for="c-3-layout-footer-stories" class="badge ok as-toggle">3 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/components/Footer/Footer.stories.tsx">layout-footer · ./src/components/Footer/Footer.stories.tsx</div>
+    
+    <div class="hint">Figma &quot;Footer&quot; (desktop, tablet, mobile). Defaults are the Figma component&#39;s text and link.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-3-layout-footer-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-3-layout-footer-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">3 prop types</span>
+            </div>
+            <pre><code>Component: src/components/Footer/Footer.tsx::Footer</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>copyright?: string = © 2026 Anna Horodecka
+
+linkHref?: string = https://www.linkedin.com/in/anna-horodecka-449037192
+
+linkLabel?: string = Contact</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Footer } from 'design-system';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Desktop</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Desktop = () =&gt; &lt;Footer /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Tablet</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Tablet = () =&gt; &lt;Footer /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Mobile</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Mobile = () =&gt; &lt;Footer /&gt;;</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="sections-hero"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Hero">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Hero</h2>
+      <div class="badges">
+        <label for="c-4-sections-hero-props" class="badge ok as-toggle">1 prop type</label>
+        
+        <label for="c-4-sections-hero-stories" class="badge ok as-toggle">3 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/components/Hero/Hero.stories.tsx">sections-hero · ./src/components/Hero/Hero.stories.tsx</div>
+    
+    <div class="hint">Figma &quot;Section/Hero&quot; (desktop, tablet, mobile).</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-4-sections-hero-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-4-sections-hero-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">1 prop type</span>
+            </div>
+            <pre><code>Component: src/components/Hero/Hero.tsx::Hero</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Display title. Line breaks and spaces are kept.
+ */
+text?: string = UX . AI.
+ PRODUCT   DESIGN.</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Hero } from 'design-system';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Desktop</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Desktop = () =&gt; &lt;Hero /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Tablet</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Tablet = () =&gt; &lt;Hero /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Mobile</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Mobile = () =&gt; &lt;Hero /&gt;;</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="primitives-icon"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Icon">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Icon</h2>
+      <div class="badges">
+        <label for="c-5-primitives-icon-props" class="badge ok as-toggle">3 prop types</label>
+        
+        <label for="c-5-primitives-icon-stories" class="badge ok as-toggle">2 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/components/Icon/Icon.stories.tsx">primitives-icon · ./src/components/Icon/Icon.stories.tsx</div>
+    
+    <div class="hint">Figma &quot;Icons&quot; (light style). The SVG is used as a mask, so the icon
+takes the current text colour and follows hover states and themes.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-5-primitives-icon-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-5-primitives-icon-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">3 prop types</span>
+            </div>
+            <pre><code>Component: src/components/Icon/Icon.tsx::Icon</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>className?: string
+
+name: &quot;chevrons-right&quot; | &quot;arrow-right-long&quot; | &quot;xmark-large&quot; | &quot;bars&quot;
+
+/**
+ * Size in px. Figma: 24 (library), 20 (in buttons), 32 (nav menu)
+ */
+size?: number = 24</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Icon } from 'design-system';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Default = () =&gt; &lt;Icon name=&quot;chevrons-right&quot; size={24} /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All Icons</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const AllIcons = () =&gt; (
+  &lt;div style={{ display: &#39;flex&#39;, gap: 32, fontFamily: &#39;var(--font-family-syne)&#39;, fontSize: 12 }}&gt;
+    {iconNames.map((name) =&gt; (
+      &lt;div key={name} style={{ display: &#39;flex&#39;, flexDirection: &#39;column&#39;, alignItems: &#39;center&#39;, gap: 8 }}&gt;
+        &lt;Icon name={name} /&gt;
+        {name}
+      &lt;/div&gt;
+    ))}
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="primitives-link-button"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="LinkButton">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> LinkButton</h2>
+      <div class="badges">
+        <label for="c-6-primitives-link-button-props" class="badge ok as-toggle">2 prop types</label>
+        
+        <label for="c-6-primitives-link-button-stories" class="badge ok as-toggle">2 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/components/LinkButton/LinkButton.stories.tsx">primitives-link-button · ./src/components/LinkButton/LinkButton.stories.tsx</div>
+    
+    <div class="hint">Figma &quot;Link button&quot;</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-6-primitives-link-button-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-6-primitives-link-button-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">2 prop types</span>
+            </div>
+            <pre><code>Component: src/components/LinkButton/LinkButton.tsx::LinkButton</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Forces a visual state (for docs). Real hover/press/focus work without it.
+ */
+state?: LinkButtonState
+
+text?: string = find out more  →</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { LinkButton } from 'design-system';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Default = () =&gt; &lt;LinkButton /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">All States</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const AllStates = () =&gt; (
+  &lt;div style={{ display: &#39;flex&#39;, flexDirection: &#39;column&#39;, gap: 20 }}&gt;
+    &lt;LinkButton /&gt;
+    &lt;LinkButton state=&quot;hover&quot; /&gt;
+    &lt;LinkButton state=&quot;active&quot; /&gt;
+    &lt;LinkButton state=&quot;focus&quot; /&gt;
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="primitives-logo"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Logo">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Logo</h2>
+      <div class="badges">
+        <label for="c-7-primitives-logo-props" class="badge ok as-toggle">2 prop types</label>
+        
+        <label for="c-7-primitives-logo-stories" class="badge ok as-toggle">1 story</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/components/Logo/Logo.stories.tsx">primitives-logo · ./src/components/Logo/Logo.stories.tsx</div>
+    
+    <div class="hint">Figma &quot;Logo&quot;: 48 × 48 circle, light and dark versions.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-7-primitives-logo-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-7-primitives-logo-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">2 prop types</span>
+            </div>
+            <pre><code>Component: src/components/Logo/Logo.tsx::Logo</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * Accessible name. Leave empty when the logo is decorative.
+ */
+alt?: string
+
+className?: string</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Logo } from 'design-system';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Default</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Default = () =&gt; &lt;Logo /&gt;;</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="layout-navigation"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Navigation">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Navigation</h2>
+      <div class="badges">
+        <label for="c-8-layout-navigation-props" class="badge ok as-toggle">4 prop types</label>
+        
+        <label for="c-8-layout-navigation-stories" class="badge ok as-toggle">3 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/components/Navigation/Navigation.stories.tsx">layout-navigation · ./src/components/Navigation/Navigation.stories.tsx</div>
+    
+    <div class="hint">Figma &quot;Navigation&quot; (desktop, tablet, mobile). Below 800px the links are
+replaced by a menu button. The open menu has no design yet: the button
+only swaps to the close icon and reports its state.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-8-layout-navigation-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-8-layout-navigation-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">4 prop types</span>
+            </div>
+            <pre><code>Component: src/components/Navigation/Navigation.tsx::Navigation</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>contactHref?: string = #
+
+contactLabel?: string = contact
+
+links?: NavLink[] = [
+  { label: &#39;work.&#39;, href: &#39;#work&#39; },
+  { label: &#39;about.&#39;, href: &#39;#about&#39; },
+  { label: &#39;skills.&#39;, href: &#39;#skills&#39; },
+]
+
+/**
+ * Called when the mobile menu button is toggled
+ */
+onMenuToggle?: ((open: boolean) =&gt; void)</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Navigation } from 'design-system';
+import { fn } from 'storybook/test';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Desktop</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Desktop = () =&gt; &lt;Navigation onMenuToggle={fn()} /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Tablet</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Tablet = () =&gt; &lt;Navigation onMenuToggle={fn()} /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Mobile</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Mobile = () =&gt; &lt;Navigation onMenuToggle={fn()} /&gt;;</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="sections-picture"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Picture">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Picture</h2>
+      <div class="badges">
+        <label for="c-9-sections-picture-props" class="badge ok as-toggle">3 prop types</label>
+        
+        <label for="c-9-sections-picture-stories" class="badge ok as-toggle">1 story</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/components/Picture/Picture.stories.tsx">sections-picture · ./src/components/Picture/Picture.stories.tsx</div>
+    
+    <div class="hint">Figma &quot;Picture&quot;: square photo. It fills its container; the Figma sizes
+are 440 (desktop), 356 (tablet), 327 (mobile). The default photo is
+pre-cropped to the Figma framing.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-9-sections-picture-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-9-sections-picture-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">3 prop types</span>
+            </div>
+            <pre><code>Component: src/components/Picture/Picture.tsx::Picture</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>alt?: string
+
+className?: string
+
+src?: string</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Picture } from 'design-system';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Sizes</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Figma sizes: 440 (desktop), 356 (tablet), 327 (mobile)</div>
+              <pre><code>const Sizes = (args) =&gt; (
+  &lt;div style={{ display: &#39;flex&#39;, gap: 40, alignItems: &#39;center&#39; }}&gt;
+    {[440, 356, 327].map((size) =&gt; (
+      &lt;div key={size} style={{ width: size }}&gt;
+        &lt;Picture {...args} /&gt;
+      &lt;/div&gt;
+    ))}
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="sections-project-card"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="ProjectCard">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> ProjectCard</h2>
+      <div class="badges">
+        <label for="c-10-sections-project-card-props" class="badge ok as-toggle">5 prop types</label>
+        
+        <label for="c-10-sections-project-card-stories" class="badge ok as-toggle">4 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/components/ProjectCard/ProjectCard.stories.tsx">sections-project-card · ./src/components/ProjectCard/ProjectCard.stories.tsx</div>
+    
+    <div class="hint">Figma &quot;Section/ProjectCard&quot; (desktop, tablet, mobile).</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-10-sections-project-card-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-10-sections-project-card-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">5 prop types</span>
+            </div>
+            <pre><code>Component: src/components/ProjectCard/ProjectCard.tsx::ProjectCard</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>/**
+ * 16:9 image slot. Defaults to the Figma placeholder.
+ */
+children?: ReactNode
+
+contentText?: string = I run moonlearning.io, a hands-on learning platform for UI design, Figma, and AI-powered product building. I cut through the noise and help people move from overthinking to designing and building.
+
+/**
+ * Warm background. Figma: &quot;Has bg&quot;
+ */
+hasBg?: boolean = true
+
+headlineText?: string = Headline
+
+linkHref?: string</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { ProjectCard } from 'design-system';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Desktop</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Desktop = () =&gt; &lt;ProjectCard /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Tablet</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Tablet = () =&gt; &lt;ProjectCard /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Mobile</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Mobile = () =&gt; &lt;ProjectCard /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Without Background</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">&quot;Has bg&quot; off: page background instead of the warm one</div>
+              <pre><code>const WithoutBackground = () =&gt; &lt;ProjectCard hasBg={false} /&gt;;</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="sections-skill"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Skill">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Skill</h2>
+      <div class="badges">
+        <label for="c-11-sections-skill-props" class="badge ok as-toggle">2 prop types</label>
+        
+        <label for="c-11-sections-skill-stories" class="badge ok as-toggle">3 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/components/Skill/Skill.stories.tsx">sections-skill · ./src/components/Skill/Skill.stories.tsx</div>
+    
+    <div class="hint">Figma &quot;Skill&quot; (desktop, tablet, mobile).</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-11-sections-skill-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-11-sections-skill-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">2 prop types</span>
+            </div>
+            <pre><code>Component: src/components/Skill/Skill.tsx::Skill</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>contentText?: string = I design complex flows that feel simple: bulk actions, edge cases, validation and error states. I think in user journeys, not single screens.
+
+titleText?: string = UX &amp; Interaction Design</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Skill } from 'design-system';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Desktop</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Desktop = () =&gt; &lt;Skill /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Tablet</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Tablet = () =&gt; &lt;Skill /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Mobile</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Mobile = () =&gt; &lt;Skill /&gt;;</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="sections-skills"
+  class="card 
+  no-error
+  no-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Skills">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Skills</h2>
+      <div class="badges">
+        <label for="c-12-sections-skills-props" class="badge ok as-toggle">3 prop types</label>
+        
+        <label for="c-12-sections-skills-stories" class="badge ok as-toggle">3 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/components/Skills/Skills.stories.tsx">sections-skills · ./src/components/Skills/Skills.stories.tsx</div>
+    
+    <div class="hint">Figma &quot;Section/Skills&quot;: 3-column grid on desktop/tablet, a single column on mobile.</div>
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  
+  
+  <input id="c-12-sections-skills-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  <input id="c-12-sections-skills-props" class="tg tg-props" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+    
+        <div class="panel panel-props">
+          <div class="note ok">
+            <div class="row">
+              <span class="ex-name">Prop types <small>(react-docgen-typescript)</small></span>
+              <span class="badge ok">3 prop types</span>
+            </div>
+            <pre><code>Component: src/components/Skills/Skills.tsx::Skills</code></pre>
+            <pre><code>Props:</code></pre>
+            <pre><code>headlineText?: string = Headline
+
+id?: string
+
+/**
+ * Skill items. Defaults to three default Skill instances, as in Figma.
+ */
+skills?: SkillProps[] = [{}, {}, {}]</code></pre>
+          </div>
+        </div>
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          <div class="note ok">
+                <div class="row">
+                  <span class="ex-name">Imports</span>
+                </div>
+                <pre><code>import { Skills } from 'design-system';</code></pre>
+              </div>
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Desktop</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Desktop = () =&gt; &lt;Skills /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Tablet</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Tablet = () =&gt; &lt;Skills /&gt;;</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Mobile</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              
+              <pre><code>const Mobile = () =&gt; &lt;Skills /&gt;;</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="foundations-spacing-radius"
+  class="card 
+  has-error
+  has-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Spacing&amp;radius">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-err"></span> Spacing&amp;radius</h2>
+      <div class="badges">
+        <label for="c-13-foundations-spacing-radius-err" class="badge err as-toggle">API error</label>
+        <label for="c-13-foundations-spacing-radius-info" class="badge info as-toggle">2 infos</label>
+        <label for="c-13-foundations-spacing-radius-stories" class="badge ok as-toggle">3 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/foundations/Spacing.stories.tsx">foundations-spacing-radius · ./src/foundations/Spacing.stories.tsx</div>
+    
+    
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  <input id="c-13-foundations-spacing-radius-err" class="tg tg-err" type="checkbox" hidden />
+  <input id="c-13-foundations-spacing-radius-info" class="tg tg-info" type="checkbox" hidden />
+  <input id="c-13-foundations-spacing-radius-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  
+
+  <div class="panels">
+    
+        <div class="panel panel-err">
+          
+    <div class="note err">
+      <div class="note-title">API error</div>
+      <div class="note-body"><pre><code>We could not detect the component from your story file. Specify meta.component.
+  3 | import &#39;./Foundations.css&#39;;
+  4 |
+&gt; 5 | const meta = {
+    | ^
+  6 |   title: &#39;Foundations/Spacing &amp; radius&#39;,
+  7 |   tags: [&#39;!autodocs&#39;],
+  8 |   parameters: { controls: { disable: true } },
+
+./src/foundations/Spacing.stories.tsx:
+import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
+import { aliasOf, figmaName, modes, radiusPrimitives, spacePrimitives, spaceSemantics } from &#39;./tokens&#39;;
+import &#39;./Foundations.css&#39;;
+
+const meta = {
+  title: &#39;Foundations/Spacing &amp; radius&#39;,
+  tags: [&#39;!autodocs&#39;],
+  parameters: { controls: { disable: true } },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj&lt;typeof meta&gt;;
+
+/** Figma collection &quot;space primitives&quot; */
+export const SpacePrimitives: Story = {
+  render: () =&gt; (
+    &lt;div className=&quot;fd&quot;&gt;
+      &lt;section&gt;
+        &lt;h2&gt;space primitives&lt;/h2&gt;
+        &lt;table&gt;
+          &lt;tbody&gt;
+            {spacePrimitives.map(([name, value]) =&gt; (
+              &lt;tr key={name}&gt;
+                &lt;td&gt;
+                  &lt;code&gt;{figmaName(name)}&lt;/code&gt;
+                &lt;/td&gt;
+                &lt;td&gt;{value}&lt;/td&gt;
+                &lt;td&gt;
+                  &lt;div className=&quot;fd__bar&quot; style={{ width: `var(${name})` }} /&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            ))}
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  ),
+};
+
+const Alias = ({ value }: { value: string }) =&gt; {
+  const alias = aliasOf(value)!;
+  return (
+    &lt;&gt;
+      {modes.desktop[alias]} &lt;code className=&quot;fd__muted&quot;&gt;{figmaName(alias)}&lt;/code&gt;
+    &lt;/&gt;
+  );
+};
+
+/** Figma collection &quot;space semantics&quot;, modes &gt;1280, &gt;800 and &lt;800 */
+export const SpaceSemantics: Story = {
+  render: () =&gt; (
+    &lt;div className=&quot;fd&quot;&gt;
+      &lt;section&gt;
+        &lt;h2&gt;space semantics&lt;/h2&gt;
+        &lt;table&gt;
+          &lt;thead&gt;
+            &lt;tr&gt;
+              &lt;th&gt;Token&lt;/th&gt;
+              &lt;th&gt;&amp;gt;1280&lt;/th&gt;
+              &lt;th&gt;&amp;gt;800&lt;/th&gt;
+              &lt;th&gt;&amp;lt;800&lt;/th&gt;
+            &lt;/tr&gt;
+          &lt;/thead&gt;
+          &lt;tbody&gt;
+            {spaceSemantics.map((name) =&gt; (
+              &lt;tr key={name}&gt;
+                &lt;td&gt;
+                  &lt;code&gt;{figmaName(name)}&lt;/code&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;Alias value={modes.desktop[name]} /&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;Alias value={modes.tablet[name]} /&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;Alias value={modes.mobile[name]} /&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            ))}
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  ),
+};
+
+/** Figma collection &quot;radius primitives&quot; */
+export const Radius: Story = {
+  render: () =&gt; (
+    &lt;div className=&quot;fd&quot;&gt;
+      &lt;section&gt;
+        &lt;h2&gt;radius primitives&lt;/h2&gt;
+        &lt;div style={{ display: &#39;flex&#39;, gap: 24 }}&gt;
+          {radiusPrimitives.map(([name, value]) =&gt; (
+            &lt;div className=&quot;fd__swatch&quot; key={name}&gt;
+              &lt;div className=&quot;fd__radius&quot; style={{ borderRadius: `var(${name})` }} /&gt;
+              &lt;code&gt;{figmaName(name)}&lt;/code&gt;
+              &lt;span className=&quot;fd__muted&quot;&gt;{value}&lt;/span&gt;
+            &lt;/div&gt;
+          ))}
+        &lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  ),
+};
+</code></pre></div>
+    </div>
+        </div>
+    
+        <div class="panel panel-info">
+          
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">No description found. Write a jsdoc comment such as /** Component description */.</div>
+    </div>
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">Specify an @import jsdoc tag on your component or your stories meta such as @import import { Spacing&amp;radius } from &#39;my-design-system&#39;;</div>
+    </div>
+        </div>
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Space Primitives</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Figma collection &quot;space primitives&quot;</div>
+              <pre><code>const SpacePrimitives = () =&gt; (
+  &lt;div className=&quot;fd&quot;&gt;
+    &lt;section&gt;
+      &lt;h2&gt;space primitives&lt;/h2&gt;
+      &lt;table&gt;
+        &lt;tbody&gt;
+          {spacePrimitives.map(([name, value]) =&gt; (
+            &lt;tr key={name}&gt;
+              &lt;td&gt;
+                &lt;code&gt;{figmaName(name)}&lt;/code&gt;
+              &lt;/td&gt;
+              &lt;td&gt;{value}&lt;/td&gt;
+              &lt;td&gt;
+                &lt;div className=&quot;fd__bar&quot; style={{ width: `var(${name})` }} /&gt;
+              &lt;/td&gt;
+            &lt;/tr&gt;
+          ))}
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Space Semantics</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Figma collection &quot;space semantics&quot;, modes &gt;1280, &gt;800 and &lt;800</div>
+              <pre><code>const SpaceSemantics = () =&gt; (
+  &lt;div className=&quot;fd&quot;&gt;
+    &lt;section&gt;
+      &lt;h2&gt;space semantics&lt;/h2&gt;
+      &lt;table&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;
+            &lt;th&gt;Token&lt;/th&gt;
+            &lt;th&gt;&amp;gt;1280&lt;/th&gt;
+            &lt;th&gt;&amp;gt;800&lt;/th&gt;
+            &lt;th&gt;&amp;lt;800&lt;/th&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          {spaceSemantics.map((name) =&gt; (
+            &lt;tr key={name}&gt;
+              &lt;td&gt;
+                &lt;code&gt;{figmaName(name)}&lt;/code&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;Alias value={modes.desktop[name]} /&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;Alias value={modes.tablet[name]} /&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;Alias value={modes.mobile[name]} /&gt;
+              &lt;/td&gt;
+            &lt;/tr&gt;
+          ))}
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Radius</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Figma collection &quot;radius primitives&quot;</div>
+              <pre><code>const Radius = () =&gt; (
+  &lt;div className=&quot;fd&quot;&gt;
+    &lt;section&gt;
+      &lt;h2&gt;radius primitives&lt;/h2&gt;
+      &lt;div style={{ display: &#39;flex&#39;, gap: 24 }}&gt;
+        {radiusPrimitives.map(([name, value]) =&gt; (
+          &lt;div className=&quot;fd__swatch&quot; key={name}&gt;
+            &lt;div className=&quot;fd__radius&quot; style={{ borderRadius: `var(${name})` }} /&gt;
+            &lt;code&gt;{figmaName(name)}&lt;/code&gt;
+            &lt;span className=&quot;fd__muted&quot;&gt;{value}&lt;/span&gt;
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  id="foundations-typography"
+  class="card 
+  has-error
+  has-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Typography">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-err"></span> Typography</h2>
+      <div class="badges">
+        <label for="c-14-foundations-typography-err" class="badge err as-toggle">API error</label>
+        <label for="c-14-foundations-typography-info" class="badge info as-toggle">2 infos</label>
+        <label for="c-14-foundations-typography-stories" class="badge ok as-toggle">1 story</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/foundations/Typography.stories.tsx">foundations-typography · ./src/foundations/Typography.stories.tsx</div>
+    
+    
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  <input id="c-14-foundations-typography-err" class="tg tg-err" type="checkbox" hidden />
+  <input id="c-14-foundations-typography-info" class="tg tg-info" type="checkbox" hidden />
+  <input id="c-14-foundations-typography-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  
+
+  <div class="panels">
+    
+        <div class="panel panel-err">
+          
+    <div class="note err">
+      <div class="note-title">API error</div>
+      <div class="note-body"><pre><code>We could not detect the component from your story file. Specify meta.component.
+  3 | import &#39;./Foundations.css&#39;;
+  4 |
+&gt; 5 | const meta = {
+    | ^
+  6 |   title: &#39;Foundations/Typography&#39;,
+  7 |   tags: [&#39;!autodocs&#39;],
+  8 |   parameters: { controls: { disable: true } },
+
+./src/foundations/Typography.stories.tsx:
+import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
+import { figmaName, modes } from &#39;./tokens&#39;;
+import &#39;./Foundations.css&#39;;
+
+const meta = {
+  title: &#39;Foundations/Typography&#39;,
+  tags: [&#39;!autodocs&#39;],
+  parameters: { controls: { disable: true } },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj&lt;typeof meta&gt;;
+
+/* Figma text styles and the variables they are bound to */
+const textStyles = [
+  { name: &#39;text/display/md&#39;, className: &#39;text-display-md&#39;, font: &#39;Monoton Regular&#39;, size: &#39;--font-size-700&#39;, lineHeight: &#39;120%&#39;, tracking: &#39;2%&#39;, sample: &#39;UX . AI.&#39; },
+  { name: &#39;text/headline/lg&#39;, className: &#39;text-headline-lg&#39;, font: &#39;Syne Bold&#39;, size: &#39;--font-size-500&#39;, lineHeight: &#39;145%&#39;, tracking: &#39;-2%&#39;, sample: &#39;About me&#39; },
+  { name: &#39;text/headline/md&#39;, className: &#39;text-headline-md&#39;, font: &#39;Syne Bold&#39;, size: &#39;--font-size-400&#39;, lineHeight: &#39;125%&#39;, tracking: &#39;-2%&#39;, sample: &#39;Project headline&#39; },
+  { name: &#39;text/headline/sm&#39;, className: &#39;text-headline-sm&#39;, font: &#39;Syne Bold&#39;, size: &#39;--font-size-200&#39;, lineHeight: &#39;145%&#39;, tracking: &#39;-0.5%&#39;, sample: &#39;UX &amp; Interaction Design&#39; },
+  { name: &#39;text/subtitle/md&#39;, className: &#39;text-subtitle-md&#39;, font: &#39;Syne Regular&#39;, size: &#39;--font-size-300&#39;, lineHeight: &#39;145%&#39;, tracking: &#39;-0.5%&#39;, sample: &#39;Anna Horodecka&#39; },
+  { name: &#39;text/body/md&#39;, className: &#39;text-body-md&#39;, font: &#39;Poppins Regular&#39;, size: &#39;--font-size-100&#39;, lineHeight: &#39;170%&#39;, tracking: &#39;-0.5%&#39;, sample: &#39;I design complex flows that feel simple.&#39; },
+  { name: &#39;text/button/md&#39;, className: &#39;text-button-md&#39;, font: &#39;Syne Medium&#39;, size: &#39;--font-size-100&#39;, lineHeight: &#39;20px&#39;, tracking: &#39;0%&#39;, sample: &#39;contact&#39; },
+  { name: &#39;text/label/md&#39;, className: &#39;text-label-md&#39;, font: &#39;Syne Medium&#39;, size: &#39;--font-size-100&#39;, lineHeight: &#39;20px&#39;, tracking: &#39;0%&#39;, sample: &#39;© 2026 Anna Horodecka&#39; },
+  { name: &#39;text/link/md&#39;, className: &#39;text-link-md&#39;, font: &#39;Syne Bold&#39;, size: &#39;--font-size-100&#39;, lineHeight: &#39;170%&#39;, tracking: &#39;-2%&#39;, sample: &#39;find out more  →&#39; },
+  { name: &#39;text/link/md-subtle&#39;, className: &#39;text-link-md-subtle&#39;, font: &#39;Syne Medium&#39;, size: &#39;--font-size-100&#39;, lineHeight: &#39;20px&#39;, tracking: &#39;0%&#39;, sample: &#39;Contact&#39; },
+];
+
+const px = (cssVar: string, mode: keyof typeof modes) =&gt; modes[mode][cssVar];
+
+/** All Figma text styles. Sizes per breakpoint mode: &gt;1280 / &gt;800 / &lt;800. */
+export const TextStyles: Story = {
+  render: () =&gt; (
+    &lt;div className=&quot;fd&quot;&gt;
+      &lt;section&gt;
+        &lt;h2&gt;Text styles&lt;/h2&gt;
+        &lt;p className=&quot;fd__note&quot;&gt;The sample uses the current Frame mode (toolbar). Class names: &lt;code&gt;.text-…&lt;/code&gt; in &lt;code&gt;src/typography.css&lt;/code&gt;.&lt;/p&gt;
+        &lt;table&gt;
+          &lt;thead&gt;
+            &lt;tr&gt;
+              &lt;th&gt;Style&lt;/th&gt;
+              &lt;th&gt;Sample&lt;/th&gt;
+              &lt;th&gt;Font&lt;/th&gt;
+              &lt;th&gt;Size (&amp;gt;1280 / &amp;gt;800 / &amp;lt;800)&lt;/th&gt;
+              &lt;th&gt;Line height&lt;/th&gt;
+              &lt;th&gt;Letter spacing&lt;/th&gt;
+            &lt;/tr&gt;
+          &lt;/thead&gt;
+          &lt;tbody&gt;
+            {textStyles.map((s) =&gt; (
+              &lt;tr key={s.name}&gt;
+                &lt;td&gt;
+                  &lt;code&gt;{s.name}&lt;/code&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;span className={s.className} style={{ whiteSpace: &#39;pre&#39; }}&gt;
+                    {s.sample}
+                  &lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td&gt;{s.font}&lt;/td&gt;
+                &lt;td&gt;
+                  {px(s.size, &#39;desktop&#39;)} / {px(s.size, &#39;tablet&#39;)} / {px(s.size, &#39;mobile&#39;)}
+                  &lt;br /&gt;
+                  &lt;code className=&quot;fd__muted&quot;&gt;{figmaName(s.size)}&lt;/code&gt;
+                &lt;/td&gt;
+                &lt;td&gt;{s.lineHeight}&lt;/td&gt;
+                &lt;td&gt;{s.tracking}&lt;/td&gt;
+              &lt;/tr&gt;
+            ))}
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  ),
+};
+</code></pre></div>
+    </div>
+        </div>
+    
+        <div class="panel panel-info">
+          
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">No description found. Write a jsdoc comment such as /** Component description */.</div>
+    </div>
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">Specify an @import jsdoc tag on your component or your stories meta such as @import import { Typography } from &#39;my-design-system&#39;;</div>
+    </div>
+        </div>
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Text Styles</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">All Figma text styles. Sizes per breakpoint mode: &gt;1280 / &gt;800 / &lt;800.</div>
+              <pre><code>const TextStyles = () =&gt; (
+  &lt;div className=&quot;fd&quot;&gt;
+    &lt;section&gt;
+      &lt;h2&gt;Text styles&lt;/h2&gt;
+      &lt;p className=&quot;fd__note&quot;&gt;The sample uses the current Frame mode (toolbar). Class names: &lt;code&gt;.text-…&lt;/code&gt; in &lt;code&gt;src/typography.css&lt;/code&gt;.&lt;/p&gt;
+      &lt;table&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;
+            &lt;th&gt;Style&lt;/th&gt;
+            &lt;th&gt;Sample&lt;/th&gt;
+            &lt;th&gt;Font&lt;/th&gt;
+            &lt;th&gt;Size (&amp;gt;1280 / &amp;gt;800 / &amp;lt;800)&lt;/th&gt;
+            &lt;th&gt;Line height&lt;/th&gt;
+            &lt;th&gt;Letter spacing&lt;/th&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          {textStyles.map((s) =&gt; (
+            &lt;tr key={s.name}&gt;
+              &lt;td&gt;
+                &lt;code&gt;{s.name}&lt;/code&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;span className={s.className} style={{ whiteSpace: &#39;pre&#39; }}&gt;
+                  {s.sample}
+                &lt;/span&gt;
+              &lt;/td&gt;
+              &lt;td&gt;{s.font}&lt;/td&gt;
+              &lt;td&gt;
+                {px(s.size, &#39;desktop&#39;)} / {px(s.size, &#39;tablet&#39;)} / {px(s.size, &#39;mobile&#39;)}
+                &lt;br /&gt;
+                &lt;code className=&quot;fd__muted&quot;&gt;{figmaName(s.size)}&lt;/code&gt;
+              &lt;/td&gt;
+              &lt;td&gt;{s.lineHeight}&lt;/td&gt;
+              &lt;td&gt;{s.tracking}&lt;/td&gt;
+            &lt;/tr&gt;
+          ))}
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+    </div>
+    <div class="error-groups" role="region" aria-label="API error groups">
+        <section class="group">
+          <input id="no-component-found-toggle" class="group-tg" type="checkbox" hidden />
+          <label for="no-component-found-toggle" class="group-header">
+            <span class="caret">▸</span>
+            <span class="group-title">No component found</span>
+            <span class="group-count">3</span>
+          </label>
+          <div class="group-cards">
+<article
+  
+  class="card 
+  has-error
+  has-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Colours">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-err"></span> Colours</h2>
+      <div class="badges">
+        <label for="c-error-0-foundations-colours-err" class="badge err as-toggle">API error</label>
+        <label for="c-error-0-foundations-colours-info" class="badge info as-toggle">2 infos</label>
+        <label for="c-error-0-foundations-colours-stories" class="badge ok as-toggle">2 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/foundations/Colors.stories.tsx">foundations-colours · ./src/foundations/Colors.stories.tsx</div>
+    
+    
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  <input id="c-error-0-foundations-colours-err" class="tg tg-err" type="checkbox" hidden />
+  <input id="c-error-0-foundations-colours-info" class="tg tg-info" type="checkbox" hidden />
+  <input id="c-error-0-foundations-colours-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  
+
+  <div class="panels">
+    
+        <div class="panel panel-err">
+          
+    <div class="note err">
+      <div class="note-title">API error</div>
+      <div class="note-body"><pre><code>We could not detect the component from your story file. Specify meta.component.
+  3 | import &#39;./Foundations.css&#39;;
+  4 |
+&gt; 5 | const meta = {
+    | ^
+  6 |   title: &#39;Foundations/Colours&#39;,
+  7 |   tags: [&#39;!autodocs&#39;],
+  8 |   parameters: { controls: { disable: true } },
+
+./src/foundations/Colors.stories.tsx:
+import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
+import { figmaName, hexOf, primitiveColors, semanticColors } from &#39;./tokens&#39;;
+import &#39;./Foundations.css&#39;;
+
+const meta = {
+  title: &#39;Foundations/Colours&#39;,
+  tags: [&#39;!autodocs&#39;],
+  parameters: { controls: { disable: true } },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj&lt;typeof meta&gt;;
+
+/** Figma collection &quot;colour primitives&quot; */
+export const Primitives: Story = {
+  render: () =&gt; (
+    &lt;div className=&quot;fd&quot;&gt;
+      {[&#39;coral&#39;, &#39;sand&#39;, &#39;neutral&#39;].map((family) =&gt; (
+        &lt;section key={family}&gt;
+          &lt;h2&gt;{family}&lt;/h2&gt;
+          &lt;div className=&quot;fd__swatches&quot;&gt;
+            {primitiveColors
+              .filter((c) =&gt; c.family === family)
+              .map((c) =&gt; (
+                &lt;div className=&quot;fd__swatch&quot; key={c.name}&gt;
+                  &lt;div className=&quot;fd__chip&quot; style={{ background: `var(${c.name})` }} /&gt;
+                  &lt;code&gt;{figmaName(c.name).replace(&#39;color/&#39;, &#39;&#39;)}&lt;/code&gt;
+                  &lt;span className=&quot;fd__muted&quot;&gt;{c.value}&lt;/span&gt;
+                &lt;/div&gt;
+              ))}
+          &lt;/div&gt;
+        &lt;/section&gt;
+      ))}
+    &lt;/div&gt;
+  ),
+};
+
+const Mode = ({ alias }: { alias: string }) =&gt; (
+  &lt;span className=&quot;fd__mode&quot;&gt;
+    &lt;span className=&quot;fd__dot&quot; style={{ background: `var(${alias})` }} /&gt;
+    &lt;span&gt;
+      &lt;code&gt;{figmaName(alias)}&lt;/code&gt;
+      &lt;br /&gt;
+      &lt;span className=&quot;fd__muted&quot;&gt;{hexOf(alias)}&lt;/span&gt;
+    &lt;/span&gt;
+  &lt;/span&gt;
+);
+
+/** Figma collection &quot;colour semantics&quot;, modes light and dark. Use these in components. */
+export const Semantics: Story = {
+  render: () =&gt; (
+    &lt;div className=&quot;fd&quot;&gt;
+      &lt;section&gt;
+        &lt;h2&gt;colour semantics&lt;/h2&gt;
+        &lt;p className=&quot;fd__note&quot;&gt;Each token points to a primitive, per mode. The Theme toolbar switches the mode for the components.&lt;/p&gt;
+        &lt;table&gt;
+          &lt;thead&gt;
+            &lt;tr&gt;
+              &lt;th&gt;Token&lt;/th&gt;
+              &lt;th&gt;CSS variable&lt;/th&gt;
+              &lt;th&gt;light&lt;/th&gt;
+              &lt;th&gt;dark&lt;/th&gt;
+            &lt;/tr&gt;
+          &lt;/thead&gt;
+          &lt;tbody&gt;
+            {semanticColors.map((c) =&gt; (
+              &lt;tr key={c.name}&gt;
+                &lt;td&gt;
+                  &lt;code&gt;{figmaName(c.name)}&lt;/code&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;code className=&quot;fd__muted&quot;&gt;{c.name}&lt;/code&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;Mode alias={c.light} /&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;Mode alias={c.dark} /&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            ))}
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  ),
+};
+</code></pre></div>
+    </div>
+        </div>
+    
+        <div class="panel panel-info">
+          
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">No description found. Write a jsdoc comment such as /** Component description */.</div>
+    </div>
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">Specify an @import jsdoc tag on your component or your stories meta such as @import import { Colours } from &#39;my-design-system&#39;;</div>
+    </div>
+        </div>
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Primitives</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Figma collection &quot;colour primitives&quot;</div>
+              <pre><code>const Primitives = () =&gt; (
+  &lt;div className=&quot;fd&quot;&gt;
+    {[&#39;coral&#39;, &#39;sand&#39;, &#39;neutral&#39;].map((family) =&gt; (
+      &lt;section key={family}&gt;
+        &lt;h2&gt;{family}&lt;/h2&gt;
+        &lt;div className=&quot;fd__swatches&quot;&gt;
+          {primitiveColors
+            .filter((c) =&gt; c.family === family)
+            .map((c) =&gt; (
+              &lt;div className=&quot;fd__swatch&quot; key={c.name}&gt;
+                &lt;div className=&quot;fd__chip&quot; style={{ background: `var(${c.name})` }} /&gt;
+                &lt;code&gt;{figmaName(c.name).replace(&#39;color/&#39;, &#39;&#39;)}&lt;/code&gt;
+                &lt;span className=&quot;fd__muted&quot;&gt;{c.value}&lt;/span&gt;
+              &lt;/div&gt;
+            ))}
+        &lt;/div&gt;
+      &lt;/section&gt;
+    ))}
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Semantics</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Figma collection &quot;colour semantics&quot;, modes light and dark. Use these in components.</div>
+              <pre><code>const Semantics = () =&gt; (
+  &lt;div className=&quot;fd&quot;&gt;
+    &lt;section&gt;
+      &lt;h2&gt;colour semantics&lt;/h2&gt;
+      &lt;p className=&quot;fd__note&quot;&gt;Each token points to a primitive, per mode. The Theme toolbar switches the mode for the components.&lt;/p&gt;
+      &lt;table&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;
+            &lt;th&gt;Token&lt;/th&gt;
+            &lt;th&gt;CSS variable&lt;/th&gt;
+            &lt;th&gt;light&lt;/th&gt;
+            &lt;th&gt;dark&lt;/th&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          {semanticColors.map((c) =&gt; (
+            &lt;tr key={c.name}&gt;
+              &lt;td&gt;
+                &lt;code&gt;{figmaName(c.name)}&lt;/code&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;code className=&quot;fd__muted&quot;&gt;{c.name}&lt;/code&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;Mode alias={c.light} /&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;Mode alias={c.dark} /&gt;
+              &lt;/td&gt;
+            &lt;/tr&gt;
+          ))}
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  
+  class="card 
+  has-error
+  has-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Spacing&amp;radius">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-err"></span> Spacing&amp;radius</h2>
+      <div class="badges">
+        <label for="c-error-1-foundations-spacing-radius-err" class="badge err as-toggle">API error</label>
+        <label for="c-error-1-foundations-spacing-radius-info" class="badge info as-toggle">2 infos</label>
+        <label for="c-error-1-foundations-spacing-radius-stories" class="badge ok as-toggle">3 stories</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/foundations/Spacing.stories.tsx">foundations-spacing-radius · ./src/foundations/Spacing.stories.tsx</div>
+    
+    
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  <input id="c-error-1-foundations-spacing-radius-err" class="tg tg-err" type="checkbox" hidden />
+  <input id="c-error-1-foundations-spacing-radius-info" class="tg tg-info" type="checkbox" hidden />
+  <input id="c-error-1-foundations-spacing-radius-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  
+
+  <div class="panels">
+    
+        <div class="panel panel-err">
+          
+    <div class="note err">
+      <div class="note-title">API error</div>
+      <div class="note-body"><pre><code>We could not detect the component from your story file. Specify meta.component.
+  3 | import &#39;./Foundations.css&#39;;
+  4 |
+&gt; 5 | const meta = {
+    | ^
+  6 |   title: &#39;Foundations/Spacing &amp; radius&#39;,
+  7 |   tags: [&#39;!autodocs&#39;],
+  8 |   parameters: { controls: { disable: true } },
+
+./src/foundations/Spacing.stories.tsx:
+import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
+import { aliasOf, figmaName, modes, radiusPrimitives, spacePrimitives, spaceSemantics } from &#39;./tokens&#39;;
+import &#39;./Foundations.css&#39;;
+
+const meta = {
+  title: &#39;Foundations/Spacing &amp; radius&#39;,
+  tags: [&#39;!autodocs&#39;],
+  parameters: { controls: { disable: true } },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj&lt;typeof meta&gt;;
+
+/** Figma collection &quot;space primitives&quot; */
+export const SpacePrimitives: Story = {
+  render: () =&gt; (
+    &lt;div className=&quot;fd&quot;&gt;
+      &lt;section&gt;
+        &lt;h2&gt;space primitives&lt;/h2&gt;
+        &lt;table&gt;
+          &lt;tbody&gt;
+            {spacePrimitives.map(([name, value]) =&gt; (
+              &lt;tr key={name}&gt;
+                &lt;td&gt;
+                  &lt;code&gt;{figmaName(name)}&lt;/code&gt;
+                &lt;/td&gt;
+                &lt;td&gt;{value}&lt;/td&gt;
+                &lt;td&gt;
+                  &lt;div className=&quot;fd__bar&quot; style={{ width: `var(${name})` }} /&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            ))}
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  ),
+};
+
+const Alias = ({ value }: { value: string }) =&gt; {
+  const alias = aliasOf(value)!;
+  return (
+    &lt;&gt;
+      {modes.desktop[alias]} &lt;code className=&quot;fd__muted&quot;&gt;{figmaName(alias)}&lt;/code&gt;
+    &lt;/&gt;
+  );
+};
+
+/** Figma collection &quot;space semantics&quot;, modes &gt;1280, &gt;800 and &lt;800 */
+export const SpaceSemantics: Story = {
+  render: () =&gt; (
+    &lt;div className=&quot;fd&quot;&gt;
+      &lt;section&gt;
+        &lt;h2&gt;space semantics&lt;/h2&gt;
+        &lt;table&gt;
+          &lt;thead&gt;
+            &lt;tr&gt;
+              &lt;th&gt;Token&lt;/th&gt;
+              &lt;th&gt;&amp;gt;1280&lt;/th&gt;
+              &lt;th&gt;&amp;gt;800&lt;/th&gt;
+              &lt;th&gt;&amp;lt;800&lt;/th&gt;
+            &lt;/tr&gt;
+          &lt;/thead&gt;
+          &lt;tbody&gt;
+            {spaceSemantics.map((name) =&gt; (
+              &lt;tr key={name}&gt;
+                &lt;td&gt;
+                  &lt;code&gt;{figmaName(name)}&lt;/code&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;Alias value={modes.desktop[name]} /&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;Alias value={modes.tablet[name]} /&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;Alias value={modes.mobile[name]} /&gt;
+                &lt;/td&gt;
+              &lt;/tr&gt;
+            ))}
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  ),
+};
+
+/** Figma collection &quot;radius primitives&quot; */
+export const Radius: Story = {
+  render: () =&gt; (
+    &lt;div className=&quot;fd&quot;&gt;
+      &lt;section&gt;
+        &lt;h2&gt;radius primitives&lt;/h2&gt;
+        &lt;div style={{ display: &#39;flex&#39;, gap: 24 }}&gt;
+          {radiusPrimitives.map(([name, value]) =&gt; (
+            &lt;div className=&quot;fd__swatch&quot; key={name}&gt;
+              &lt;div className=&quot;fd__radius&quot; style={{ borderRadius: `var(${name})` }} /&gt;
+              &lt;code&gt;{figmaName(name)}&lt;/code&gt;
+              &lt;span className=&quot;fd__muted&quot;&gt;{value}&lt;/span&gt;
+            &lt;/div&gt;
+          ))}
+        &lt;/div&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  ),
+};
+</code></pre></div>
+    </div>
+        </div>
+    
+        <div class="panel panel-info">
+          
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">No description found. Write a jsdoc comment such as /** Component description */.</div>
+    </div>
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">Specify an @import jsdoc tag on your component or your stories meta such as @import import { Spacing&amp;radius } from &#39;my-design-system&#39;;</div>
+    </div>
+        </div>
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Space Primitives</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Figma collection &quot;space primitives&quot;</div>
+              <pre><code>const SpacePrimitives = () =&gt; (
+  &lt;div className=&quot;fd&quot;&gt;
+    &lt;section&gt;
+      &lt;h2&gt;space primitives&lt;/h2&gt;
+      &lt;table&gt;
+        &lt;tbody&gt;
+          {spacePrimitives.map(([name, value]) =&gt; (
+            &lt;tr key={name}&gt;
+              &lt;td&gt;
+                &lt;code&gt;{figmaName(name)}&lt;/code&gt;
+              &lt;/td&gt;
+              &lt;td&gt;{value}&lt;/td&gt;
+              &lt;td&gt;
+                &lt;div className=&quot;fd__bar&quot; style={{ width: `var(${name})` }} /&gt;
+              &lt;/td&gt;
+            &lt;/tr&gt;
+          ))}
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Space Semantics</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Figma collection &quot;space semantics&quot;, modes &gt;1280, &gt;800 and &lt;800</div>
+              <pre><code>const SpaceSemantics = () =&gt; (
+  &lt;div className=&quot;fd&quot;&gt;
+    &lt;section&gt;
+      &lt;h2&gt;space semantics&lt;/h2&gt;
+      &lt;table&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;
+            &lt;th&gt;Token&lt;/th&gt;
+            &lt;th&gt;&amp;gt;1280&lt;/th&gt;
+            &lt;th&gt;&amp;gt;800&lt;/th&gt;
+            &lt;th&gt;&amp;lt;800&lt;/th&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          {spaceSemantics.map((name) =&gt; (
+            &lt;tr key={name}&gt;
+              &lt;td&gt;
+                &lt;code&gt;{figmaName(name)}&lt;/code&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;Alias value={modes.desktop[name]} /&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;Alias value={modes.tablet[name]} /&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;Alias value={modes.mobile[name]} /&gt;
+              &lt;/td&gt;
+            &lt;/tr&gt;
+          ))}
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Radius</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">Figma collection &quot;radius primitives&quot;</div>
+              <pre><code>const Radius = () =&gt; (
+  &lt;div className=&quot;fd&quot;&gt;
+    &lt;section&gt;
+      &lt;h2&gt;radius primitives&lt;/h2&gt;
+      &lt;div style={{ display: &#39;flex&#39;, gap: 24 }}&gt;
+        {radiusPrimitives.map(([name, value]) =&gt; (
+          &lt;div className=&quot;fd__swatch&quot; key={name}&gt;
+            &lt;div className=&quot;fd__radius&quot; style={{ borderRadius: `var(${name})` }} /&gt;
+            &lt;code&gt;{figmaName(name)}&lt;/code&gt;
+            &lt;span className=&quot;fd__muted&quot;&gt;{value}&lt;/span&gt;
+          &lt;/div&gt;
+        ))}
+      &lt;/div&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article>
+<article
+  
+  class="card 
+  has-error
+  has-info
+  no-story-error
+  no-story-warning
+  
+  no-doc-error"
+  role="listitem"
+  aria-label="Typography">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-err"></span> Typography</h2>
+      <div class="badges">
+        <label for="c-error-2-foundations-typography-err" class="badge err as-toggle">API error</label>
+        <label for="c-error-2-foundations-typography-info" class="badge info as-toggle">2 infos</label>
+        <label for="c-error-2-foundations-typography-stories" class="badge ok as-toggle">1 story</label>
+        
+        
+      </div>
+    </div>
+    <div class="meta" title="./src/foundations/Typography.stories.tsx">foundations-typography · ./src/foundations/Typography.stories.tsx</div>
+    
+    
+    
+  </div>
+
+  <!-- ⬇️ Hidden toggles must be siblings BEFORE .panels -->
+  <input id="c-error-2-foundations-typography-err" class="tg tg-err" type="checkbox" hidden />
+  <input id="c-error-2-foundations-typography-info" class="tg tg-info" type="checkbox" hidden />
+  <input id="c-error-2-foundations-typography-stories" class="tg tg-stories" type="checkbox" hidden />
+  
+  
+  
+
+  <div class="panels">
+    
+        <div class="panel panel-err">
+          
+    <div class="note err">
+      <div class="note-title">API error</div>
+      <div class="note-body"><pre><code>We could not detect the component from your story file. Specify meta.component.
+  3 | import &#39;./Foundations.css&#39;;
+  4 |
+&gt; 5 | const meta = {
+    | ^
+  6 |   title: &#39;Foundations/Typography&#39;,
+  7 |   tags: [&#39;!autodocs&#39;],
+  8 |   parameters: { controls: { disable: true } },
+
+./src/foundations/Typography.stories.tsx:
+import type { Meta, StoryObj } from &#39;@storybook/react-vite&#39;;
+import { figmaName, modes } from &#39;./tokens&#39;;
+import &#39;./Foundations.css&#39;;
+
+const meta = {
+  title: &#39;Foundations/Typography&#39;,
+  tags: [&#39;!autodocs&#39;],
+  parameters: { controls: { disable: true } },
+} satisfies Meta;
+
+export default meta;
+type Story = StoryObj&lt;typeof meta&gt;;
+
+/* Figma text styles and the variables they are bound to */
+const textStyles = [
+  { name: &#39;text/display/md&#39;, className: &#39;text-display-md&#39;, font: &#39;Monoton Regular&#39;, size: &#39;--font-size-700&#39;, lineHeight: &#39;120%&#39;, tracking: &#39;2%&#39;, sample: &#39;UX . AI.&#39; },
+  { name: &#39;text/headline/lg&#39;, className: &#39;text-headline-lg&#39;, font: &#39;Syne Bold&#39;, size: &#39;--font-size-500&#39;, lineHeight: &#39;145%&#39;, tracking: &#39;-2%&#39;, sample: &#39;About me&#39; },
+  { name: &#39;text/headline/md&#39;, className: &#39;text-headline-md&#39;, font: &#39;Syne Bold&#39;, size: &#39;--font-size-400&#39;, lineHeight: &#39;125%&#39;, tracking: &#39;-2%&#39;, sample: &#39;Project headline&#39; },
+  { name: &#39;text/headline/sm&#39;, className: &#39;text-headline-sm&#39;, font: &#39;Syne Bold&#39;, size: &#39;--font-size-200&#39;, lineHeight: &#39;145%&#39;, tracking: &#39;-0.5%&#39;, sample: &#39;UX &amp; Interaction Design&#39; },
+  { name: &#39;text/subtitle/md&#39;, className: &#39;text-subtitle-md&#39;, font: &#39;Syne Regular&#39;, size: &#39;--font-size-300&#39;, lineHeight: &#39;145%&#39;, tracking: &#39;-0.5%&#39;, sample: &#39;Anna Horodecka&#39; },
+  { name: &#39;text/body/md&#39;, className: &#39;text-body-md&#39;, font: &#39;Poppins Regular&#39;, size: &#39;--font-size-100&#39;, lineHeight: &#39;170%&#39;, tracking: &#39;-0.5%&#39;, sample: &#39;I design complex flows that feel simple.&#39; },
+  { name: &#39;text/button/md&#39;, className: &#39;text-button-md&#39;, font: &#39;Syne Medium&#39;, size: &#39;--font-size-100&#39;, lineHeight: &#39;20px&#39;, tracking: &#39;0%&#39;, sample: &#39;contact&#39; },
+  { name: &#39;text/label/md&#39;, className: &#39;text-label-md&#39;, font: &#39;Syne Medium&#39;, size: &#39;--font-size-100&#39;, lineHeight: &#39;20px&#39;, tracking: &#39;0%&#39;, sample: &#39;© 2026 Anna Horodecka&#39; },
+  { name: &#39;text/link/md&#39;, className: &#39;text-link-md&#39;, font: &#39;Syne Bold&#39;, size: &#39;--font-size-100&#39;, lineHeight: &#39;170%&#39;, tracking: &#39;-2%&#39;, sample: &#39;find out more  →&#39; },
+  { name: &#39;text/link/md-subtle&#39;, className: &#39;text-link-md-subtle&#39;, font: &#39;Syne Medium&#39;, size: &#39;--font-size-100&#39;, lineHeight: &#39;20px&#39;, tracking: &#39;0%&#39;, sample: &#39;Contact&#39; },
+];
+
+const px = (cssVar: string, mode: keyof typeof modes) =&gt; modes[mode][cssVar];
+
+/** All Figma text styles. Sizes per breakpoint mode: &gt;1280 / &gt;800 / &lt;800. */
+export const TextStyles: Story = {
+  render: () =&gt; (
+    &lt;div className=&quot;fd&quot;&gt;
+      &lt;section&gt;
+        &lt;h2&gt;Text styles&lt;/h2&gt;
+        &lt;p className=&quot;fd__note&quot;&gt;The sample uses the current Frame mode (toolbar). Class names: &lt;code&gt;.text-…&lt;/code&gt; in &lt;code&gt;src/typography.css&lt;/code&gt;.&lt;/p&gt;
+        &lt;table&gt;
+          &lt;thead&gt;
+            &lt;tr&gt;
+              &lt;th&gt;Style&lt;/th&gt;
+              &lt;th&gt;Sample&lt;/th&gt;
+              &lt;th&gt;Font&lt;/th&gt;
+              &lt;th&gt;Size (&amp;gt;1280 / &amp;gt;800 / &amp;lt;800)&lt;/th&gt;
+              &lt;th&gt;Line height&lt;/th&gt;
+              &lt;th&gt;Letter spacing&lt;/th&gt;
+            &lt;/tr&gt;
+          &lt;/thead&gt;
+          &lt;tbody&gt;
+            {textStyles.map((s) =&gt; (
+              &lt;tr key={s.name}&gt;
+                &lt;td&gt;
+                  &lt;code&gt;{s.name}&lt;/code&gt;
+                &lt;/td&gt;
+                &lt;td&gt;
+                  &lt;span className={s.className} style={{ whiteSpace: &#39;pre&#39; }}&gt;
+                    {s.sample}
+                  &lt;/span&gt;
+                &lt;/td&gt;
+                &lt;td&gt;{s.font}&lt;/td&gt;
+                &lt;td&gt;
+                  {px(s.size, &#39;desktop&#39;)} / {px(s.size, &#39;tablet&#39;)} / {px(s.size, &#39;mobile&#39;)}
+                  &lt;br /&gt;
+                  &lt;code className=&quot;fd__muted&quot;&gt;{figmaName(s.size)}&lt;/code&gt;
+                &lt;/td&gt;
+                &lt;td&gt;{s.lineHeight}&lt;/td&gt;
+                &lt;td&gt;{s.tracking}&lt;/td&gt;
+              &lt;/tr&gt;
+            ))}
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/section&gt;
+    &lt;/div&gt;
+  ),
+};
+</code></pre></div>
+    </div>
+        </div>
+    
+        <div class="panel panel-info">
+          
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">No description found. Write a jsdoc comment such as /** Component description */.</div>
+    </div>
+    <div class="note info">
+      <div class="note-title">Info</div>
+      <div class="note-body">Specify an @import jsdoc tag on your component or your stories meta such as @import import { Typography } from &#39;my-design-system&#39;;</div>
+    </div>
+        </div>
+    
+    
+        <div class="panel panel-stories">
+          
+          
+          
+          
+          
+          
+            <div class="note ok">
+              <div class="row">
+                <span class="ex-name">Text Styles</span>
+                <span class="badge ok">story ok</span>
+              </div>
+              
+              <div class="hint">All Figma text styles. Sizes per breakpoint mode: &gt;1280 / &gt;800 / &lt;800.</div>
+              <pre><code>const TextStyles = () =&gt; (
+  &lt;div className=&quot;fd&quot;&gt;
+    &lt;section&gt;
+      &lt;h2&gt;Text styles&lt;/h2&gt;
+      &lt;p className=&quot;fd__note&quot;&gt;The sample uses the current Frame mode (toolbar). Class names: &lt;code&gt;.text-…&lt;/code&gt; in &lt;code&gt;src/typography.css&lt;/code&gt;.&lt;/p&gt;
+      &lt;table&gt;
+        &lt;thead&gt;
+          &lt;tr&gt;
+            &lt;th&gt;Style&lt;/th&gt;
+            &lt;th&gt;Sample&lt;/th&gt;
+            &lt;th&gt;Font&lt;/th&gt;
+            &lt;th&gt;Size (&amp;gt;1280 / &amp;gt;800 / &amp;lt;800)&lt;/th&gt;
+            &lt;th&gt;Line height&lt;/th&gt;
+            &lt;th&gt;Letter spacing&lt;/th&gt;
+          &lt;/tr&gt;
+        &lt;/thead&gt;
+        &lt;tbody&gt;
+          {textStyles.map((s) =&gt; (
+            &lt;tr key={s.name}&gt;
+              &lt;td&gt;
+                &lt;code&gt;{s.name}&lt;/code&gt;
+              &lt;/td&gt;
+              &lt;td&gt;
+                &lt;span className={s.className} style={{ whiteSpace: &#39;pre&#39; }}&gt;
+                  {s.sample}
+                &lt;/span&gt;
+              &lt;/td&gt;
+              &lt;td&gt;{s.font}&lt;/td&gt;
+              &lt;td&gt;
+                {px(s.size, &#39;desktop&#39;)} / {px(s.size, &#39;tablet&#39;)} / {px(s.size, &#39;mobile&#39;)}
+                &lt;br /&gt;
+                &lt;code className=&quot;fd__muted&quot;&gt;{figmaName(s.size)}&lt;/code&gt;
+              &lt;/td&gt;
+              &lt;td&gt;{s.lineHeight}&lt;/td&gt;
+              &lt;td&gt;{s.tracking}&lt;/td&gt;
+            &lt;/tr&gt;
+          ))}
+        &lt;/tbody&gt;
+      &lt;/table&gt;
+    &lt;/section&gt;
+  &lt;/div&gt;
+);</code></pre>
+              
+            </div>
+        </div>
+    
+    
+  </div>
+</article></div>
+        </section>
+      </div>
+    <h2 class="section-title">Unattached Docs</h2>
+    <div class="grid" role="list">
+      
+<article
+  class="card is-doc no-doc-error"
+  role="listitem"
+  aria-label="Docs">
+  <div class="head">
+    <div class="title">
+      <h2><span class="status-dot dot-ok"></span> Introduction</h2>
+      <div class="badges">
+        
+        <label for="doc-0-introduction-docs-content" class="badge ok as-toggle">view content</label>
+      </div>
+    </div>
+    <div class="meta" title="./src/Introduction.mdx">introduction--docs · ./src/Introduction.mdx</div>
+    <div># Portfolio design system React components built from the Figma page **❖ Components** ([My...</div>
+  </div>
+
+  <!-- Hidden toggles must be siblings BEFORE .panels -->
+  
+  <input id="doc-0-introduction-docs-content" class="tg tg-content" type="checkbox" hidden />
+
+  <div class="panels">
+    
+    
+        <div class="panel panel-content">
+          <div class="mdx-content">
+            <pre><code>import { Meta } from &#39;@storybook/addon-docs/blocks&#39;;
+
+&lt;Meta title=&quot;Introduction&quot; /&gt;
+
+# Portfolio design system
+
+React components built from the Figma page **❖ Components**
+([My-project](https://www.figma.com/design/bHRn6PCs8dDNpgPaYAnZ0p/My-project?node-id=1-57)).
+Each component has the same properties and default content as in Figma. The real page content lives only in the app.
+
+## Sections
+
+- **Foundations**: colours, typography, spacing and radius. They&#39;re read straight from `src/tokens.css`, a 1:1 copy of the Figma variable collections and modes.
+- **Primitives**: Button, Link button, Icon, Logo.
+- **Layout**: Navigation, Footer.
+- **Sections**: Hero, Project card, About, Picture, Skill, Skills.
+
+Every component has a **Docs** page with its props (the Figma properties) and all its stories.
+
+## Toolbar
+
+- **Theme**: Figma mode of `colour semantics` (light / dark).
+- **Frame**: Figma breakpoint mode (`&gt;1280`, `&gt;800`, `&lt;800`) and frame width. Section stories set it themselves: Desktop 1280, Tablet 800, Mobile 375. The frame height hugs the content, like a Figma frame.
+
+## Using a component
+
+```tsx
+import { DsRoot, ProjectCard } from &#39;./components&#39;;
+
+&lt;DsRoot&gt;                              {/* sets the breakpoint mode from the window width */}
+  &lt;ProjectCard
+    headlineText=&quot;My project&quot;
+    contentText=&quot;What I did and why.&quot;
+    hasBg={false}
+  &gt;
+    &lt;img src={cover} alt=&quot;&quot; /&gt;         {/* image slot, 16:9 */}
+  &lt;/ProjectCard&gt;
+&lt;/DsRoot&gt;
+```
+
+## When Figma changes
+
+1. Variables: update `src/tokens.css` (same names as Figma, `/` → `-`). Foundations update by themselves.
+2. Text styles: update `src/typography.css`.
+3. Components: update the matching folder in `src/components/`. Props keep the Figma property names.
+</code></pre>
+          </div>
+        </div>
+  </div>
+</article>
+    </div>
+    
+  </div>
+</main>
+</body>
+</html>  
